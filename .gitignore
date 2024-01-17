@@ -1,0 +1,7 @@
+/backend/.env
+.idea
+/backend/venv/
+/backend/__pycache__
+/backend/migrations
+/frontend/node_modules
+/frontend/build
