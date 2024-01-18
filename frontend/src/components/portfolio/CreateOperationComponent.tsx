@@ -11,7 +11,7 @@ import { PortfolioPriceContext } from "./contexts/OnlinePortfolioPriceContext";
 const CreateOperationComponent: FC = () => {
     const { investments, setInvestments } = useContext(ListInvestmentsContext);
     const { operations, setOperations } = useContext(ListOperationContext);
-    const { portfolioPrice, setPortfolioPrice } = useContext(PortfolioPriceContext);
+    const { prices, setPrices } = useContext(PortfolioPriceContext);
     const [listTickers, setListTickers] = useState<Array<string>>();
     const [operationData, setOperationData] = useState<OperationType>({
         'ticker': '',
@@ -54,7 +54,7 @@ const CreateOperationComponent: FC = () => {
             .then(response => {
                 setOperations(response.data)
                 SetListInvestmentsHook({ investments, setInvestments })
-                SetPortfolioPrice({ portfolioPrice, setPortfolioPrice })
+                SetPortfolioPrice({ prices, setPrices })
 
             })
             .catch(error => {
@@ -65,7 +65,7 @@ const CreateOperationComponent: FC = () => {
 
     return (
         <div id="defport" className="collapse">
-            <div className="container">
+            <div className="container" style={{ backgroundColor: "#F5FFFA" }}>
                 <form onSubmit={submitHandler}>
                     <div className="row">
                         <div className="form-group col-sm-2">

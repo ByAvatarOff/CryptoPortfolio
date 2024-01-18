@@ -12,7 +12,12 @@ export const SetPortfolioPrice = (context: any) => {
     requestTemplate.get('api/portfolio/porfolio_operation_sum/')
       .then(response => {
         const jsonArray = JSON.parse(response.data)
-        console.log(jsonArray)
-        context.setPortfolioPrice(jsonArray.reduce((sum: number, current: any) => sum + current.price, 0))
+        requestTemplate.get('api/portfolio/all_time_profit/')
+        .then(responseProfit => {
+          context.setPrices({
+            portfolioPrice: jsonArray.reduce((sum: number, current: any) => sum + current.price, 0),
+            total_profit: responseProfit.data
+          })
+        })
       })
 }

@@ -30,3 +30,9 @@ export type Investment = {
 }
 
 export type ListInvestments = [Investment]
+
+
+export type PortfolioPrices = {
+    portfolioPrice: number
+    total_profit: number
+}

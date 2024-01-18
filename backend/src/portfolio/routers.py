@@ -9,11 +9,11 @@ from sqlalchemy import select, insert, delete, func, case
 from auth.base_config import current_user
 from auth.models import User, user
 from .utils import get_user_portfolio, \
-                   decode_access, get_all_symbols, get_ticker_price, \
-                   get_difference_type, update_current_ticker_price
+    decode_access, get_all_symbols, get_ticker_price, \
+    get_difference_type, update_current_ticker_price, \
+    compute_all_time_profit
 from fastapi.responses import JSONResponse
 import json
-
 
 portfolio_router = APIRouter(
     prefix="/api/portfolio",
@@ -52,11 +52,11 @@ async def add_operation(new_operation: PortfolioCreateSchema,
     """
     user_id: int = user.id
     stmt = select(func.coalesce(func.sum(case((portfolio.c.type == 'buy', portfolio.c.amount), else_=0)) -
-         func.sum(case((portfolio.c.type == 'sell', portfolio.c.amount), else_=0)), 0).label('diff_amount'))\
+                                func.sum(case((portfolio.c.type == 'sell', portfolio.c.amount), else_=0)), 0).label(
+        'diff_amount')) \
         .where((portfolio.c.user_id == user_id) &
                (portfolio.c.ticker == new_operation.ticker))
     result = (await session.execute(stmt)).mappings().all()[0].get('diff_amount')
-    print(result)
     if result - new_operation.amount < 0 and new_operation.type != 'buy':
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -93,7 +93,7 @@ async def list_all_investments(session: AsyncSession = Depends(get_async_session
 @portfolio_router.get("/porfolio_operation_sum/",
                       status_code=status.HTTP_200_OK)
 async def portfolio_operation_sum(session: AsyncSession = Depends(get_async_session),
-                             user: User = Depends(current_user)):
+                                  user: User = Depends(current_user)):
     """
     Form list with amount tickers with buy and sell
     After request to binance with unique tickers and it return price there tickers
@@ -103,4 +103,15 @@ async def portfolio_operation_sum(session: AsyncSession = Depends(get_async_sess
     list_ticker_current_price = await get_ticker_price(list(map(lambda obj: obj.get('ticker'), list_difference)))
 
     result_ticker_prices = await update_current_ticker_price(list_difference, list_ticker_current_price)
+    print(json.dumps(result_ticker_prices))
     return json.dumps(result_ticker_prices)
+
+
+@portfolio_router.get("/all_time_profit/",
+                      status_code=status.HTTP_200_OK)
+async def all_time_profit(session: AsyncSession = Depends(get_async_session),
+                          user: User = Depends(current_user)):
+    """
+    Return user profit user price actives - current price actives
+    """
+    return await compute_all_time_profit(session, user.id)

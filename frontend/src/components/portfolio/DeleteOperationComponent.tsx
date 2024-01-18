@@ -10,14 +10,14 @@ import { PortfolioPriceContext } from "./contexts/OnlinePortfolioPriceContext";
 const DeleteOperationComponent = (props: DeleteOperationPropsType) => {
     const { investments, setInvestments } = useContext(ListInvestmentsContext);
     const { operations, setOperations } = useContext(ListOperationContext);
-    const { portfolioPrice, setPortfolioPrice } = useContext(PortfolioPriceContext);
+    const { prices, setPrices } = useContext(PortfolioPriceContext);
 
     const DeleteRecordHandler = () => {
         let endpoint = `api/portfolio/delete_operation/${props.operation_id}/`;
         requestTemplate.delete(endpoint).then((response) => {
             setOperations(response.data)
             SetListInvestmentsHook({ investments, setInvestments })
-            SetPortfolioPrice({ portfolioPrice, setPortfolioPrice })
+            SetPortfolioPrice({ prices, setPrices })
         });;
 
     }

@@ -1,10 +1,12 @@
 from .models import portfolio
-from sqlalchemy import select, case, func, Row, RowMapping
+from sqlalchemy import select, case, func, RowMapping
 import aiohttp
 from config import SECRET_AUTH
 from jose import jwt, JWTError
 import json
 from .schemas import ListTickersPrice, PortfolioSchema
+from sqlalchemy.ext.asyncio import AsyncSession
+from functools import reduce
 
 
 async def decode_access(token: str) -> int:
@@ -15,7 +17,7 @@ async def decode_access(token: str) -> int:
         return 0
 
 
-async def get_user_portfolio(user_id: int, session) -> list[PortfolioSchema]:
+async def get_user_portfolio(user_id: int, session: AsyncSession) -> list[PortfolioSchema]:
     """
     All operation in user portfolio
     """
@@ -58,7 +60,7 @@ async def get_ticker_price(list_ticker: list[str]) -> list[ListTickersPrice]:
     return response
 
 
-async def get_difference_type(session, user_id: int) -> list[RowMapping]:
+async def get_difference_type(session: AsyncSession, user_id: int) -> list[RowMapping]:
     """
     Find difference
     """
@@ -94,3 +96,40 @@ async def update_current_ticker_price(list_difference: list[RowMapping], list_di
         obj.update({'symbol': obj.get('symbol'),
                     "price": float(obj.get('price')) * float(amount.get('amount_difference'))})
     return list_dict_prices
+
+
+async def compute_all_time_profit(session: AsyncSession, user_id: int):
+    """
+    Get from binance api current prices tickers, and return list with price ticker * amount ticker
+    """
+    list_difference = await get_difference_type(session, user_id)
+    list_ticker_current_price = await get_ticker_price(list(map(lambda obj: obj.get('ticker'), list_difference)))
+    stmt = select(func.sum(portfolio.c.price * portfolio.c.amount).label('total_price')).where(portfolio.c.user_id == user_id)
+    result = await session.execute(stmt)
+    user_active_price = result.mappings().all()[0]
+    current_active_price = await update_current_ticker_price(list_difference, list_ticker_current_price)
+
+    return sum(map(lambda x: x.get('price', 0), current_active_price)) - user_active_price.get('total_price', 0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

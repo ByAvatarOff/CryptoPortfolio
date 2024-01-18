@@ -72,7 +72,7 @@ const ListInvestmentsComponent: FC = () => {
                         }}
                             options={{ responsive: false }} height={500} width={500} />
                     </div>
-                    <div className="col-md-auto align-self-center mx-5 mb-5">
+                    <div className="col-md-auto align-self-center mx-5 mb-5" style={{ backgroundColor: "#F5FFFA" }}>
                         <ul>
                             {investments?.map((investment, index) => (
                                 <li><h4 key={index}>{investment.ticker}: {tickerPersent(investment, investments)}%</h4></li>
