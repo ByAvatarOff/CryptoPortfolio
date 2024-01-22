@@ -3,13 +3,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from db.database import get_async_session
 from starlette import status
 
-from .schemas import PortfolioSchema, PortfolioCreateSchema
-from .models import portfolio
-from sqlalchemy import select, insert, delete, func, case
+from .schemas import PortfolioSchema, PortfolioCreateSchema, ListInvestmentSchema
+from portfolio.models import Portfolio
+from sqlalchemy import insert, delete
 from auth.base_config import current_user
-from auth.models import User, user
-from .utils import get_user_portfolio, \
-    decode_access, get_all_symbols, get_ticker_price, \
+from auth.models import User
+from .utils import get_user_portfolio, get_all_symbols, \
+    get_ticker_current_price, check_diff_amount, \
     get_difference_type, update_current_ticker_price, \
     compute_all_time_profit
 from fastapi.responses import JSONResponse
@@ -33,7 +33,7 @@ async def list_all_tickers() -> list[str]:
                       response_model=list[PortfolioSchema],
                       status_code=status.HTTP_200_OK)
 async def list_all_operation(session: AsyncSession = Depends(get_async_session),
-                             user: User = Depends(current_user)) -> list[PortfolioSchema]:
+                             user: User = Depends(current_user)):
     """
     Return list all user operation in portfolio
     """
@@ -45,25 +45,16 @@ async def list_all_operation(session: AsyncSession = Depends(get_async_session),
                        status_code=status.HTTP_201_CREATED)
 async def add_operation(new_operation: PortfolioCreateSchema,
                         session: AsyncSession = Depends(get_async_session),
-                        user: User = Depends(current_user)) -> list[PortfolioSchema] | JSONResponse:
+                        user: User = Depends(current_user)):
     """
     Create operation in portfolio
-    Check if
     """
-    user_id: int = user.id
-    stmt = select(func.coalesce(func.sum(case((portfolio.c.type == 'buy', portfolio.c.amount), else_=0)) -
-                                func.sum(case((portfolio.c.type == 'sell', portfolio.c.amount), else_=0)), 0).label(
-        'diff_amount')) \
-        .where((portfolio.c.user_id == user_id) &
-               (portfolio.c.ticker == new_operation.ticker))
-    result = (await session.execute(stmt)).mappings().all()[0].get('diff_amount')
-    if result - new_operation.amount < 0 and new_operation.type != 'buy':
-        return JSONResponse(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            content={"error": 'You cant to sell more than buy'},
-        )
+    result: float = await check_diff_amount(user.id, session, new_operation)
+    if isinstance(result, JSONResponse):
+        return result
+
     new_operation.user_id = user.id
-    stmt = insert(portfolio).values(**new_operation.dict())
+    stmt = insert(Portfolio).values(new_operation.model_dump())
     await session.execute(stmt)
     await session.commit()
     return await get_user_portfolio(user.id, session)
@@ -74,19 +65,24 @@ async def add_operation(new_operation: PortfolioCreateSchema,
                          status_code=status.HTTP_200_OK)
 async def delete_operation(operation_id: int,
                            session: AsyncSession = Depends(get_async_session),
-                           user: User = Depends(current_user)) -> list[PortfolioSchema]:
+                           user: User = Depends(current_user)):
     """
     Delete user operation in portfolio and return new list with operation
     """
-    stmt = delete(portfolio).where(portfolio.c.id == operation_id)
+    stmt = delete(Portfolio).where(Portfolio.id == operation_id)
     await session.execute(stmt)
     await session.commit()
     return await get_user_portfolio(user.id, session)
 
 
-@portfolio_router.get("/all_investments/", status_code=status.HTTP_200_OK)
+@portfolio_router.get("/all_investments/",
+                      response_model=list[ListInvestmentSchema],
+                      status_code=status.HTTP_200_OK)
 async def list_all_investments(session: AsyncSession = Depends(get_async_session),
                                user: User = Depends(current_user)):
+    """
+    List user operation in investment
+    """
     return await get_difference_type(session, user.id)
 
 
@@ -96,14 +92,12 @@ async def portfolio_operation_sum(session: AsyncSession = Depends(get_async_sess
                                   user: User = Depends(current_user)):
     """
     Form list with amount tickers with buy and sell
-    After request to binance with unique tickers and it return price there tickers
+    After request to binance with unique tickers, and it returns price there tickers
     And return result list[dict] with price * amount
     """
     list_difference = await get_difference_type(session, user.id)
-    list_ticker_current_price = await get_ticker_price(list(map(lambda obj: obj.get('ticker'), list_difference)))
-
+    list_ticker_current_price = await get_ticker_current_price(list_difference)
     result_ticker_prices = await update_current_ticker_price(list_difference, list_ticker_current_price)
-    print(json.dumps(result_ticker_prices))
     return json.dumps(result_ticker_prices)
 
 

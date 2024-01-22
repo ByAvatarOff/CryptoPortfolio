@@ -1,32 +1,25 @@
 from datetime import datetime
 
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
-from sqlalchemy import Table, Column, Integer, String, TIMESTAMP, Boolean, MetaData
-
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from db.database import Base
+from typing import TYPE_CHECKING
 
-metadata = MetaData()
 
-user = Table(
-    "user",
-    metadata,
-    Column("id", Integer, primary_key=True),
-    Column("email", String, nullable=False),
-    Column("username", String, nullable=False),
-    Column("registered_at", TIMESTAMP, default=datetime.utcnow),
-    Column("hashed_password", String, nullable=False),
-    Column("is_active", Boolean, default=True, nullable=False),
-    Column("is_superuser", Boolean, default=False, nullable=False),
-    Column("is_verified", Boolean, default=False, nullable=False),
-)
+if TYPE_CHECKING:
+    from src.portfolio.models import Portfolio
 
 
 class User(SQLAlchemyBaseUserTable[int], Base):
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    email = Column(String, nullable=False)
-    username = Column(String, nullable=False)
-    registered_at = Column(TIMESTAMP, default=datetime.utcnow)
-    hashed_password: str = Column(String(length=1024), nullable=False)
-    is_active: bool = Column(Boolean, default=True, nullable=False)
-    is_superuser: bool = Column(Boolean, default=False, nullable=False)
-    is_verified: bool = Column(Boolean, default=False, nullable=False)
+    """
+    Model of view table User
+    """
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    email: Mapped[str]
+    username: Mapped[str]
+    registered_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
+    hashed_password: Mapped[str]
+    is_active: Mapped[bool] = mapped_column(default=True)
+    is_superuser: Mapped[bool] = mapped_column(default=True)
+    is_verified: Mapped[bool] = mapped_column(default=True)
+    portfolio: Mapped['Portfolio'] = relationship(cascade='all, delete-orphan')

@@ -33,3 +33,10 @@ class TickersListSchema(BaseModel):
 class ListTickersPrice(BaseModel):
     symbol: str
     price: float
+
+
+class ListInvestmentSchema(BaseModel):
+    ticker: str
+    amount_difference: float
+    price_difference: float
+    avg_price: float

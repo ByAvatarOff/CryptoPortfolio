@@ -1,19 +1,21 @@
-from sqlalchemy import Float, Column, Integer, String, MetaData, Table, TIMESTAMP, ForeignKey
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
-from auth.models import user
+from db.database import Base
+from auth.models import User
 
 
-metadata = MetaData()
+class Portfolio(Base):
+    """
+    Model of view table portfolio
+    """
+    __tablename__ = 'portfolio'
 
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    ticker: Mapped[str]
+    amount: Mapped[float]
+    price: Mapped[float]
+    type: Mapped[str]
+    add_date: Mapped[datetime] = mapped_column(default=datetime.utcnow)
 
-portfolio = Table(
-    "portfolio",
-    metadata,
-    Column("id", Integer, primary_key=True, autoincrement=True),
-        Column("ticker", String),
-    Column("amount", Float),
-    Column("price", Float),
-    Column("type", String),
-    Column("add_date", TIMESTAMP, default=datetime.utcnow),
-    Column('user_id', Integer, ForeignKey(user.c.id))
-)
+    user_id: Mapped[int] = mapped_column(ForeignKey(User.id, ondelete='CASCADE'))
