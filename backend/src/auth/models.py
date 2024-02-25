@@ -1,10 +1,9 @@
 from datetime import datetime
-
-from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from db.database import Base
 from typing import TYPE_CHECKING
 
+from db.database import Base
+from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
     from src.portfolio.models import Portfolio

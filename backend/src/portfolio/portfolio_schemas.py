@@ -1,8 +1,12 @@
-from pydantic import BaseModel, field_validator
 from datetime import datetime
+
+from pydantic import BaseModel, ConfigDict, field_validator
 
 
 class PortfolioSchema(BaseModel):
+    """Portfolio Read Schema"""
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     ticker: str
     amount: float
@@ -13,6 +17,7 @@ class PortfolioSchema(BaseModel):
 
 
 class PortfolioCreateSchema(BaseModel):
+    """Portfolio Read Schema"""
     ticker: str
     amount: float
     price: float
@@ -21,22 +26,7 @@ class PortfolioCreateSchema(BaseModel):
 
     @field_validator('type')
     def type_validation(cls, type: str):
+        """Validation type portfolio"""
         if type.lower() not in ['buy', 'sell']:
-            raise ValueError("Invalid type only buy or sell")
+            raise ValueError('Invalid type only buy or sell')
         return type
-
-
-class TickersListSchema(BaseModel):
-    ticker: str
-
-
-class ListTickersPrice(BaseModel):
-    symbol: str
-    price: float
-
-
-class ListInvestmentSchema(BaseModel):
-    ticker: str
-    amount_difference: float
-    price_difference: float
-    avg_price: float

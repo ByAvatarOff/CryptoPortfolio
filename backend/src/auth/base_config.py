@@ -1,12 +1,14 @@
-from fastapi_users import FastAPIUsers
-from fastapi_users.authentication import BearerTransport, AuthenticationBackend
-from fastapi_users.authentication import JWTStrategy
-
 from auth.manager import get_user_manager
 from auth.models import User
 from config import SECRET_AUTH
+from fastapi_users import FastAPIUsers
+from fastapi_users.authentication import (
+    AuthenticationBackend,
+    BearerTransport,
+    JWTStrategy,
+)
 
-bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
+bearer_transport = BearerTransport(tokenUrl='api/auth/login')
 
 
 def get_jwt_strategy() -> JWTStrategy:
@@ -14,7 +16,7 @@ def get_jwt_strategy() -> JWTStrategy:
 
 
 auth_backend = AuthenticationBackend(
-    name="jwt",
+    name='jwt',
     transport=bearer_transport,
     get_strategy=get_jwt_strategy,
 )
@@ -24,5 +26,4 @@ fastapi_users = FastAPIUsers[User, int](
     [auth_backend],
 
 )
-
 current_user = fastapi_users.current_user()

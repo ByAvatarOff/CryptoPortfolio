@@ -25,7 +25,7 @@ const ListOperationsComponent: FC = () => {
                     <tr>
                         <th>Name</th>
                         <th>Quantity</th>
-                        <th>Price(USD)</th>
+                        <th>Buy Price</th>
                         <th>Type operation</th>
 
                     </tr>

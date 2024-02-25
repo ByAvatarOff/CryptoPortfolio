@@ -1,4 +1,4 @@
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { Doughnut } from "react-chartjs-2";
 import { Chart, ArcElement } from 'chart.js'
 import { FC } from 'react';
@@ -8,6 +8,24 @@ import { ListInvestments, Investment } from './types';
 
 
 const ListInvestmentsComponent: FC = () => {
+
+    // const [priceWS, setPriceWS] = useState<number>()
+    // const access = localStorage.getItem('access')
+    // const socket = new WebSocket(`ws://127.0.0.1:8000/ws/${access}`);
+    // socket.onmessage = function (event) {
+    //   const jsonArray = JSON.parse(JSON.parse(event.data));
+    //   console.log(jsonArray)
+    // //   setPriceWS(jsonArray.reduce((sum: number, current: any) => sum + current.price, 0))
+    // };
+    // socket.onerror = function (event) {
+    //   console.log(event)
+    // };
+
+    // socket.onclose = function (event) {
+    //   console.log(event)
+    // };
+
+
     const { investments, setInvestments } = useContext(ListInvestmentsContext);
 
     Chart.register(ArcElement);
@@ -32,6 +50,10 @@ const ListInvestmentsComponent: FC = () => {
                         <th>Amount</th>
                         <th>Average price with sells</th>
                         <th>Money spent</th>
+                        <th>Current Price</th>
+                        <th>24h Changed</th>
+                        <th>7d Changed</th>
+                        <th>30d Changed</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,7 +98,7 @@ const ListInvestmentsComponent: FC = () => {
                         <ul>
                             {investments?.map((investment, index) => (
                                 <li><h4 key={index}>{investment.ticker}: {tickerPersent(investment, investments)}%</h4></li>
-                                
+
                         ))}
                     </ul>
                 </div>

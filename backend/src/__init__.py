@@ -1,6 +1,5 @@
 __all__ = (
-    "Base",
+    'Base',
 )
 
 from src.db.database import Base
-

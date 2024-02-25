@@ -22,7 +22,7 @@ const CreateOperationComponent: FC = () => {
     });
 
     useEffect(() => {
-        requestTemplate.get('api/portfolio/list_all_tickers/').then((response) => {
+        requestTemplate.get('api/binance/list_all_tickers/').then((response) => {
             setListTickers(response.data);
         });
     }, []);
