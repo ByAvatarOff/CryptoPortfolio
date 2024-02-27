@@ -1,19 +1,21 @@
-from fastapi import APIRouter, Depends
-from starlette import status
-
-from investment.investment_schemas import InvestmentSchema, OperationSumSchema, AllTimeProfitSchema
 from auth.base_config import current_user
 from auth.models import User
+from fastapi import APIRouter, Depends
+from investment.investment_schemas import (
+    AllTimeProfitSchema,
+    InvestmentSchema,
+    OperationSumSchema,
+)
 from investment.investment_service import InvestmentService
-
+from starlette import status
 
 investment_router = APIRouter(
-    prefix="/api/investment",
-    tags=["investment"]
+    prefix='/api/investment',
+    tags=['investment']
 )
 
 
-@investment_router.get("/all_investments/",
+@investment_router.get('/all_investments/',
                        response_model=list[InvestmentSchema],
                        status_code=status.HTTP_200_OK)
 async def list_investments(
@@ -24,7 +26,7 @@ async def list_investments(
     return await investment_service.list_investments(user_id=user.id)
 
 
-@investment_router.get("/porfolio_operation_sum/",
+@investment_router.get('/porfolio_operation_sum/',
                        response_model=list[OperationSumSchema],
                        status_code=status.HTTP_200_OK)
 async def sum_operations(
@@ -39,7 +41,7 @@ async def sum_operations(
     return await investment_service.sum_operations(user_id=user.id)
 
 
-@investment_router.get("/all_time_profit/{period}/",
+@investment_router.get('/all_time_profit/{period}/',
                        response_model=AllTimeProfitSchema,
                        status_code=status.HTTP_200_OK)
 async def all_time_profit(

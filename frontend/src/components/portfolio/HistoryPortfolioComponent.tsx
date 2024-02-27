@@ -20,8 +20,8 @@ const HistoryPortfolioComponent: FC = () => {
     const collectPricesForChart = (): number[] => {
         let total = 0;
         return ListOperation.operations?.map((object) => {
-            object.type === 'buy' ? 
-            total += object.price * object.amount : 
+            object.type === 'buy' ?
+            total += object.price * object.amount :
             total -= object.price * object.amount;
             return total;
         }) || [];

@@ -14,3 +14,4 @@ SECRET_AUTH = os.environ.get('SECRET_AUTH')
 
 BINANCE_TICKER_PRICE_URL = '/api/v3/ticker/price'
 BINANCE_LIST_TICKER_PRICE_URL = '/api/v3/ticker?symbols='
+BINANCE_WS_TICKER_PRICE_URL = 'wss://stream.binance.com:9443/stream?streams='

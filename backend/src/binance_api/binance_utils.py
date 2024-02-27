@@ -1,16 +1,6 @@
 from aiohttp import ClientSession
-from fastapi import Depends, HTTPException
 from config import BINANCE_LIST_TICKER_PRICE_URL
-from jose import jwt, JWTError
-from config import SECRET_AUTH
-
-
-# async def decode_access(token: str) -> int:
-#     try:
-#         payload = jwt.decode(token, key=SECRET_AUTH, algorithms=["HS256"], audience="fastapi-users:auth")
-#         return payload.get('sub')
-#     except JWTError:
-#         return None
+from fastapi import Depends, HTTPException
 
 
 class BinanceHTTPSession:
@@ -24,10 +14,11 @@ class BinanceHTTPSession:
 
 class BinanceHTTPMethods:
     """Binance http methods"""
+
     def __init__(self, binance_session: ClientSession = Depends(BinanceHTTPSession.async_http_session)):
         self.binance_session = binance_session
 
-    async def get(self, url: str, params: dict = None):
+    async def get(self, url: str, params=None) -> list[dict]:
         """Get method"""
         if not params:
             return await (await self.binance_session.get(url=url)).json()

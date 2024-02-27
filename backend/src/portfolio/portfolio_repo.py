@@ -1,15 +1,16 @@
-from sqlalchemy import select, case, func, Row, insert, delete
 from typing import Sequence
-from fastapi import Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.database import get_async_session
+from fastapi import Depends, HTTPException, status
 from portfolio.models import Portfolio
 from portfolio.portfolio_schemas import PortfolioCreateSchema
+from sqlalchemy import Row, case, delete, distinct, func, insert, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class PortfolioRepo:
     """Portfolio Repo"""
+
     def __init__(
             self,
             session: AsyncSession = Depends(get_async_session)
@@ -39,6 +40,12 @@ class PortfolioRepo:
                 detail='You cant to sell more than buy',
             )
         return True
+
+    async def get_unique_user_ticker(self, user_id) -> Sequence[Row]:
+        """get unique user ticker by user_id"""
+        stmt = select(distinct(Portfolio.ticker)).where(Portfolio.user_id == user_id)
+        result = await self.session.execute(stmt)
+        return result.scalars().all()
 
     async def list_operation(
             self,

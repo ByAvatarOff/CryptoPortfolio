@@ -1,13 +1,17 @@
-from fastapi import Depends
 from binance_api.binance_utils import BinanceAPI
+from fastapi import Depends
 from investment.investment_repo import InvestmentRepo
-from investment.investment_schemas import OperationSumSchema, InvestmentSchema, AllTimeProfitSchema
-from investment.investment_utils import InvestmentUtils, InvestmentSchemaConverter
-import json
+from investment.investment_schemas import (
+    AllTimeProfitSchema,
+    InvestmentSchema,
+    OperationSumSchema,
+)
+from investment.investment_utils import InvestmentSchemaConverter, InvestmentUtils
 
 
 class InvestmentService:
     """Portfolio Service"""
+
     def __init__(
             self,
             investment_repo: InvestmentRepo = Depends(),
@@ -65,7 +69,7 @@ class InvestmentService:
         """
         list_difference = await self.investment_repo.get_difference_type(user_id=user_id)
         if not list_difference:
-            return AllTimeProfitSchema.model_validate({"profit": 0})
+            return AllTimeProfitSchema.model_validate({'profit': 0})
         list_tickers = await self.investment_utils.prepare_tickers_for_get_price(list_tickers=list_difference)
 
         list_ticker_current_price = await self.binance_api_service.get_ticker_current_price(
@@ -82,6 +86,6 @@ class InvestmentService:
         ).get('total_price', 0)
         return AllTimeProfitSchema.model_validate(
             {
-                "profit": sum(map(lambda x: x.get('price', 0), binance_actives_price)) - user_actives_total_price
+                'profit': sum(map(lambda x: x.get('price', 0), binance_actives_price)) - user_actives_total_price
             }
         )

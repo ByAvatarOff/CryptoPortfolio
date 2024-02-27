@@ -36,3 +36,8 @@ export type PortfolioPrices = {
     portfolioPrice: number
     total_profit: number
 }
+
+export type WSPrices = [{
+    ticker: string,
+    price: number
+}]

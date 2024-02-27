@@ -29,7 +29,7 @@ const CustomCostComponent: FC = () => {
 
       <div className="row">
         <button type="button" className="btn btn-success csdata" data-toggle="collapse"
-          data-target="#currstat">History</button>
+          data-target="#currstat">Balance history</button>
       </div>
       <HistoryPortfolioComponent />
 

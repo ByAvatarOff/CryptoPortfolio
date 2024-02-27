@@ -1,6 +1,7 @@
 from typing import Sequence
+
+from investment.investment_schemas import InvestmentSchema, OperationSumSchema
 from sqlalchemy import RowMapping
-from investment.investment_schemas import OperationSumSchema, InvestmentSchema
 
 
 class InvestmentSchemaConverter:
@@ -30,7 +31,7 @@ class InvestmentUtils:
     async def prepare_tickers_for_get_price(self, list_tickers):
         """Get list tickers and create string with that list tickers"""
         list_tickers = list(map(lambda obj: obj.get('ticker'), list_tickers))
-        return (str(list_tickers)).replace(" ", "").replace("'", '"')
+        return (str(list_tickers)).replace(' ', '').replace("'", '"')
 
     async def update_current_ticker_price(
             self,
@@ -42,12 +43,12 @@ class InvestmentUtils:
         Return list with price ticker * amount ticker
         """
         list_updated_ticker_prices = []
-        list_dict_prices: list = sorted(list_dict_prices, key=lambda x: x.get('symbol'))
-        for (obj, amount) in zip(list_dict_prices, list_difference):
+        list_sorted_dict_prices: list = sorted(list_dict_prices, key=lambda x: x.get('symbol'))
+        for (obj, amount) in zip(list_sorted_dict_prices, list_difference):
             list_updated_ticker_prices.append(
                 {
-                    "symbol": obj.get('symbol'),
-                    "price": float(obj.get('openPrice')) * float(amount.get('amount_difference'))
+                    'symbol': obj.get('symbol'),
+                    'price': float(obj.get('openPrice')) * float(amount.get('amount_difference'))
                 }
             )
         return list_updated_ticker_prices

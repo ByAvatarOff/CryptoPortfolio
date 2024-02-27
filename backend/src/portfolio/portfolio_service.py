@@ -1,12 +1,12 @@
 from fastapi import Depends
-
 from portfolio.portfolio_repo import PortfolioRepo
-from portfolio.portfolio_schemas import PortfolioSchema, PortfolioCreateSchema
+from portfolio.portfolio_schemas import PortfolioCreateSchema, PortfolioSchema
 from portfolio.portfolio_utils import PortfolioSchemaConverter
 
 
 class PortfolioService:
     """Portfolio Service"""
+
     def __init__(
             self,
             portfolio_repo: PortfolioRepo = Depends()

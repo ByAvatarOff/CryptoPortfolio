@@ -1,7 +1,7 @@
 from typing import Sequence
-from sqlalchemy import Row
 
 from portfolio.portfolio_schemas import PortfolioSchema
+from sqlalchemy import Row
 
 
 class PortfolioSchemaConverter:
