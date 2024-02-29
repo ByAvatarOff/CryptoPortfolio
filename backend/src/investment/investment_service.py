@@ -1,4 +1,4 @@
-from binance_api.binance_utils import BinanceAPI
+from binance_api.binance_http import BinanceAPI
 from fastapi import Depends
 from investment.investment_repo import InvestmentRepo
 from investment.investment_schemas import (
@@ -65,18 +65,17 @@ class InvestmentService:
         """
         Form list with amount tickers with buy and sell
         After request to binance with unique tickers, and it returns price there tickers
-        And return result list[dict] with price * amount
+        And return diff between user actives and binance ticker price. Call profit
         """
         list_difference = await self.investment_repo.get_difference_type(user_id=user_id)
         if not list_difference:
             return AllTimeProfitSchema.model_validate({'profit': 0})
-        list_tickers = await self.investment_utils.prepare_tickers_for_get_price(list_tickers=list_difference)
 
+        list_tickers = await self.investment_utils.prepare_tickers_for_get_price(list_tickers=list_difference)
         list_ticker_current_price = await self.binance_api_service.get_ticker_current_price(
             list_tickers=list_tickers,
             period=period,
         )
-
         binance_actives_price = await self.investment_utils.update_current_ticker_price(
             list_difference=list_difference,
             list_dict_prices=list_ticker_current_price

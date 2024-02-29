@@ -37,7 +37,18 @@ export type PortfolioPrices = {
     total_profit: number
 }
 
-export type WSPrices = [{
-    ticker: string,
+export type PriceData = {
+    ticker: string
     price: number
-}]
+  }
+
+export type TimeFrameChangesList = {
+    ticker: string
+    percent: string
+  }
+
+
+export type TimeFrameChanges = {
+    timeframe_1d: Array<TimeFrameChangesList>
+    timeframe_7d: Array<TimeFrameChangesList>
+  }

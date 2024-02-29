@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from investment.investment_schemas import InvestmentSchema, OperationSumSchema
-from sqlalchemy import RowMapping
+from sqlalchemy import Row, RowMapping
 
 
 class InvestmentSchemaConverter:
@@ -28,8 +28,11 @@ class InvestmentSchemaConverter:
 
 
 class InvestmentUtils:
-    async def prepare_tickers_for_get_price(self, list_tickers):
+    """Investment Utils"""
+    async def prepare_tickers_for_get_price(self, list_tickers: list[dict] | Sequence[Row]):
         """Get list tickers and create string with that list tickers"""
+        if len(list_tickers) and isinstance(list_tickers[0], str):
+            return (str(list_tickers)).replace(' ', '').replace("'", '"')
         list_tickers = list(map(lambda obj: obj.get('ticker'), list_tickers))
         return (str(list_tickers)).replace(' ', '').replace("'", '"')
 

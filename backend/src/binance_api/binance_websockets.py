@@ -1,18 +1,19 @@
-from fastapi import WebSocket
-from auth.utils import decode_access
 import asyncio
-import websockets
 import json
 
-from config import BINANCE_WS_TICKER_PRICE_URL
+import websockets
+from auth.utils import decode_access
+from config import BINANCE_TICKER_CURRENT_PRICE_TIMEFRAME, BINANCE_WS_TICKER_PRICE_URL
+from fastapi import WebSocket
 
 
 class WSConnectionManager:
     """WebSocket Connection Manager"""
+
     def __init__(self, access_token: str):
         self.active_connections: list[WebSocket] = []
         self.access_token = access_token
-        self.user_id = None
+        self.user_id = 0
 
     async def connect(self, websocket: WebSocket):
         """Connect to ws"""
@@ -34,15 +35,15 @@ class WSConnectionManager:
 
 
 class BinanceWebSocketMethods:
+    """Binance WebSocket Methods"""
     async def create_ws_url(self, list_tickers) -> str:
         """Create sw url use user tickers"""
-        timeframe = '1h'
         base_url = BINANCE_WS_TICKER_PRICE_URL
         for ticker in list_tickers:
-            base_url += f'{ticker.lower()}@kline_{timeframe}/'
+            base_url += f'{ticker.lower()}@kline_{BINANCE_TICKER_CURRENT_PRICE_TIMEFRAME}/'
         return base_url[:-1]
 
-    async def get_ticker_timeframe_prices(self, list_tickers, manager, websocket):
+    async def get_ticker_prices(self, list_tickers, manager, websocket):
         """Connect to binance ws and return ticker prices"""
         ws_url = await self.create_ws_url(list_tickers)
         async with websockets.connect(ws_url) as ws:
@@ -50,7 +51,7 @@ class BinanceWebSocketMethods:
                 result = await ws.recv()
                 result_json = json.loads(result)
                 ticker_price = {
-                    "ticker": result_json.get('data').get('s'),
-                    "price": result_json.get('data').get('k').get('c'),
+                    'ticker': result_json.get('data').get('s'),
+                    'price': result_json.get('data').get('k').get('c'),
                 }
                 await manager.send_json_message(ticker_price, websocket)

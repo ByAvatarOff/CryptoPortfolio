@@ -1,36 +1,25 @@
-from aiohttp import ClientSession
-from config import BINANCE_LIST_TICKER_PRICE_URL
-from fastapi import Depends, HTTPException
+from decimal import Decimal
 
 
-class BinanceHTTPSession:
-    """Create session For Binance"""
-    @staticmethod
-    async def async_http_session():
-        """create binance async session"""
-        async with ClientSession(base_url='https://api.binance.com') as session:
-            yield session
-
-
-class BinanceHTTPMethods:
-    """Binance http methods"""
-
-    def __init__(self, binance_session: ClientSession = Depends(BinanceHTTPSession.async_http_session)):
-        self.binance_session = binance_session
-
-    async def get(self, url: str, params=None) -> list[dict]:
-        """Get method"""
-        if not params:
-            return await (await self.binance_session.get(url=url)).json()
-        return await (await self.binance_session.get(url=url, params=params)).json()
-
-
-class BinanceAPI(BinanceHTTPMethods):
-    async def get_ticker_current_price(self, list_tickers, period='1m') -> list[dict]:
-        """Get prices tickers from list_tickers use binance api"""
-        response = await self.get(
-            url=f'{BINANCE_LIST_TICKER_PRICE_URL}{list_tickers}&type=MINI&windowSize={period}'
-        )
-        if 'code' in response:
-            raise HTTPException(status_code=400, detail='Invalid period')
-        return response
+class BinanceTransformer:
+    """Binance Transformer"""
+    async def transform_responce_to_profit_persent(self, binance_response: list[dict]) -> list[dict]:
+        """
+        Transform timeframe tickers price to change percent between openPrice and lastPrice
+        Return list format {'1d': [{'ticker': 'BTCUSDT', 'percent': '4.18%'},
+                                   {'ticker': 'ETHUSDT', 'percent': '3.92%'}]
+        """
+        format_list = []
+        for obj in binance_response:
+            percent_change_price = (
+                    (Decimal(obj.get('lastPrice')) - Decimal(obj.get('openPrice'))) /
+                    Decimal(obj.get('openPrice')) *
+                    100
+            )
+            format_list.append(
+                {
+                    "ticker": obj.get('symbol'),
+                    "percent": f"{percent_change_price:.2f}%"
+                }
+            )
+        return format_list
