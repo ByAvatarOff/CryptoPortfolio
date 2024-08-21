@@ -1,18 +1,19 @@
-from auth.models import User
-from config import SECRET_AUTH
-from db.database import get_async_session
+import jwt
+
 from fastapi import Depends
 from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
-from jose import JWTError, jwt
+from jwt.exceptions import DecodeError
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from src.auth.models import User
+from src.core.database import get_async_session
 
 
 async def decode_access(token: str) -> int:
-    """Decode access token if valid"""
     try:
-        payload = jwt.decode(token, key=SECRET_AUTH, algorithms=['HS256'], audience='fastapi-users:auth')
+        payload = jwt.decode(token, options={"verify_signature": False})
         return payload.get('sub')
-    except JWTError:
+    except DecodeError:
         return 0
 
 

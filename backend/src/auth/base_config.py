@@ -1,6 +1,3 @@
-from auth.manager import get_user_manager
-from auth.models import User
-from config import SECRET_AUTH
 from fastapi_users import FastAPIUsers
 from fastapi_users.authentication import (
     AuthenticationBackend,
@@ -8,11 +5,16 @@ from fastapi_users.authentication import (
     JWTStrategy,
 )
 
+from src.auth.manager import get_user_manager
+from src.auth.models import User
+from src.core.settings import settings
+
+
 bearer_transport = BearerTransport(tokenUrl='api/auth/login')
 
 
 def get_jwt_strategy() -> JWTStrategy:
-    return JWTStrategy(secret=SECRET_AUTH, lifetime_seconds=86400)
+    return JWTStrategy(secret=settings.app.secret_auth, lifetime_seconds=86400)
 
 
 auth_backend = AuthenticationBackend(

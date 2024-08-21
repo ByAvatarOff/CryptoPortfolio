@@ -1,13 +1,18 @@
-from auth.base_config import auth_backend, fastapi_users
-from auth.schema import UserCreate, UserRead
-from binance_api.binance_routers import binance_router
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from investment.investment_routers import investment_router
-from portfolio.portfolio_routers import portfolio_router
+
+from src.core.settings import settings
+from src.auth.base_config import auth_backend, fastapi_users
+from src.auth.schema import UserCreate, UserRead
+# from src.binance_api.routers.binance_routers import binance_router
+from src.investment.routes.route import investment_router
+from src.portfolio.routes.operation_route import operation_router
+from src.portfolio.routes.portfolio_route import portfolio_router
+
 
 app = FastAPI(
-    title='Trading App',
+    title=settings.app.app_name,
+    description=settings.app.description,
 )
 
 app.include_router(
@@ -23,15 +28,13 @@ app.include_router(
 )
 
 
-app.include_router(portfolio_router)
-app.include_router(binance_router)
+# app.include_router(binance_router)
 app.include_router(investment_router)
+app.include_router(operation_router)
+app.include_router(portfolio_router)
 
 
-origins = [
-    'http://127.0.0.1:3000',
-    'http://localhost:3000',
-]
+origins = settings.app.origins
 
 app.add_middleware(
     CORSMiddleware,

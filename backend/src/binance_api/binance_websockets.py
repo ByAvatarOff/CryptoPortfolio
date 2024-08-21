@@ -2,8 +2,8 @@ import asyncio
 import json
 
 import websockets
-from auth.utils import decode_access
-from config import BINANCE_TICKER_CURRENT_PRICE_TIMEFRAME, BINANCE_WS_TICKER_PRICE_URL
+from src.auth.utils import decode_access
+from src.core.settings import settings
 from fastapi import WebSocket
 
 
@@ -38,9 +38,9 @@ class BinanceWebSocketMethods:
     """Binance WebSocket Methods"""
     async def create_ws_url(self, list_tickers) -> str:
         """Create sw url use user tickers"""
-        base_url = BINANCE_WS_TICKER_PRICE_URL
+        base_url = settings.app.binance_ws_ticker_price_url
         for ticker in list_tickers:
-            base_url += f'{ticker.lower()}@kline_{BINANCE_TICKER_CURRENT_PRICE_TIMEFRAME}/'
+            base_url += f'{ticker.lower()}@kline_{settings.app.binance_ticker_current_price_timeframe}/'
         return base_url[:-1]
 
     async def get_ticker_prices(self, list_tickers, manager, websocket):
