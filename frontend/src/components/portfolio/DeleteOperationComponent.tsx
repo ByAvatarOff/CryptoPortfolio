@@ -18,9 +18,9 @@ const DeleteOperationComponent = (props: DeleteOperationPropsType) => {
             setOperations(response.data)
             SetListInvestmentsHook({ investments, setInvestments })
             SetPortfolioPrice({ prices, setPrices })
-        });;
-
+        });
     }
+
     return (
         <button type="button" onClick={DeleteRecordHandler} className="btn btn-danger delete-row">Delete Row</button>
     );

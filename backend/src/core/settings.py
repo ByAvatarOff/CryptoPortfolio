@@ -10,6 +10,7 @@ class AppSettings(BaseSettings):
 
     app_name: str = "Portfolio app"
     description: str = "Portfolio app"
+    binance_base_url: str = 'https://api.binance.com'
     binance_ticker_price_url: str = '/api/v3/ticker/price'
     binance_list_ticker_price_url: str = '/api/v3/ticker?symbols='
     binance_ws_ticker_price_url: str = 'wss://stream.binance.com:9443/stream?streams='

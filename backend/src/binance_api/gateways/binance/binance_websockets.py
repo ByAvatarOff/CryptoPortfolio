@@ -8,15 +8,12 @@ from fastapi import WebSocket
 
 
 class WSConnectionManager:
-    """WebSocket Connection Manager"""
-
     def __init__(self, access_token: str):
         self.active_connections: list[WebSocket] = []
         self.access_token = access_token
         self.user_id = 0
 
     async def connect(self, websocket: WebSocket):
-        """Connect to ws"""
         user_id = await decode_access(self.access_token)
         if not user_id:
             self.active_connections.remove(websocket)
@@ -25,26 +22,21 @@ class WSConnectionManager:
         self.active_connections.append(websocket)
 
     def disconnect(self, websocket: WebSocket):
-        """DisConnect from ws"""
         self.active_connections.remove(websocket)
 
     async def send_json_message(self, message: str, websocket: WebSocket):
-        """Send message use ws"""
         await websocket.send_json(message)
         await asyncio.sleep(2)
 
 
-class BinanceWebSocketMethods:
-    """Binance WebSocket Methods"""
+class BinanceWebSocketClient:
     async def create_ws_url(self, list_tickers) -> str:
-        """Create sw url use user tickers"""
         base_url = settings.app.binance_ws_ticker_price_url
         for ticker in list_tickers:
             base_url += f'{ticker.lower()}@kline_{settings.app.binance_ticker_current_price_timeframe}/'
         return base_url[:-1]
 
     async def get_ticker_prices(self, list_tickers, manager, websocket):
-        """Connect to binance ws and return ticker prices"""
         ws_url = await self.create_ws_url(list_tickers)
         async with websockets.connect(ws_url) as ws:
             while True:

@@ -55,8 +55,8 @@ class OperationReadCommandRepo:
         if result - new_operation.amount >= 0:
             return True
 
-    async def get_unique_user_ticker(self, user_id):
-        stmt = select(distinct(self.model.ticker)).where(self.model.portfolio.user_id == user_id)
+    async def get_unique_user_ticker(self, user_id: int) -> list[dict]:
+        stmt = select(distinct(self.model.ticker)).join(Portfolio).where(Portfolio.user_id == user_id)
         result = await self.session.execute(stmt)
         return result.scalars().all()
 

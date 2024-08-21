@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.core.settings import settings
 from src.auth.base_config import auth_backend, fastapi_users
 from src.auth.schema import UserCreate, UserRead
-# from src.binance_api.routers.binance_routers import binance_router
+from src.binance_api.routes.route import binance_router
 from src.investment.routes.route import investment_router
 from src.portfolio.routes.operation_route import operation_router
 from src.portfolio.routes.portfolio_route import portfolio_router
@@ -28,7 +28,7 @@ app.include_router(
 )
 
 
-# app.include_router(binance_router)
+app.include_router(binance_router)
 app.include_router(investment_router)
 app.include_router(operation_router)
 app.include_router(portfolio_router)

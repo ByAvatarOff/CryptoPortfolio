@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class ListTickersPrice(BaseModel):
@@ -6,11 +6,10 @@ class ListTickersPrice(BaseModel):
     price: float
 
 
-class Ticker(BaseModel):
+class TickerChanges(BaseModel):
     ticker: str
     percent: str
 
 
 class TimeFramePercentChanges(BaseModel):
-    timeframe_1d: list[Ticker]
-    timeframe_7d: list[Ticker]
+    data: dict[str, list[TickerChanges]] = Field(default_factory=dict)

@@ -1,7 +1,7 @@
 /backend/.env
 .idea
-/backend/venv/
-/backend/__pycache__
-/backend/migrations
+__pycache__
 /frontend/node_modules
 /frontend/build
+.pytest_cache
+.mypy_cache

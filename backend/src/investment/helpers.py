@@ -1,6 +1,8 @@
 class InvestmentUtils:
     @staticmethod
     def prepare_tickers_for_get_price(list_tickers: list[dict]) -> str:
+        if len(list_tickers) and isinstance(list_tickers[0], str):
+            return (str(list_tickers)).replace(' ', '').replace("'", '"')
         list_tickers = list(map(lambda obj: obj.get('ticker'), list_tickers))
         return (str(list_tickers)).replace(' ', '').replace("'", '"')
 

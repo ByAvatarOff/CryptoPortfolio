@@ -62,7 +62,6 @@ const CreateOperationComponent: FC = () => {
             });
     };
 
-
     return (
         <div id="defport" className="collapse">
             <div className="container" style={{ backgroundColor: "#F5FFFA" }}>

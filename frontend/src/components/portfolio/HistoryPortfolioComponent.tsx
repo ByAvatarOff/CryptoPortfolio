@@ -1,5 +1,5 @@
-import { useEffect, useContext } from 'react';
-import { Doughnut, Line } from "react-chartjs-2";
+import { useContext } from 'react';
+import { Line } from "react-chartjs-2";
 import { FC } from 'react';
 import { ListOperationContext } from './contexts/ListOperationContext';
 
@@ -14,9 +14,7 @@ import {
 
 const HistoryPortfolioComponent: FC = () => {
     const ListOperation = useContext(ListOperationContext);
-
     const addDates = ListOperation.operations?.map(item => new Date(item.add_date).toDateString());
-
     const collectPricesForChart = (): number[] => {
         let total = 0;
         return ListOperation.operations?.map((object) => {

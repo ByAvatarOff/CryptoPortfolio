@@ -1,4 +1,4 @@
-from src.binance_api.binance_http import BinanceAPI
+from src.binance_api.gateways.binance.binance_http import BinanceAPI
 from src.portfolio.domain.repos.operation_read_command_repo import OperationReadCommandRepo
 from src.investment.schemas.schema import (
     AllTimeProfitSchema,
