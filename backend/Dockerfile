@@ -2,12 +2,14 @@ FROM python:3.11-slim
 
 ENV PYTHONUNBUFFERED=1
 
-RUN mkdir /backend
 WORKDIR /backend
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+
+RUN pip install "poetry==1.7.1"
+RUN poetry config virtualenvs.create false --local
+COPY pyproject.toml .
+COPY poetry.lock .
+RUN poetry install --no-root
 
 COPY . .
 
-RUN chmod g+x /backend/entrypoint.sh
 ENTRYPOINT ["sh", "/backend/entrypoint.sh"]

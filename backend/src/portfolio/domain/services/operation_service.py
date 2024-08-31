@@ -37,6 +37,14 @@ class OperationService:
 
         return await self.operation_change_command_repo.create(new_operation=new_operation)
 
+    async def bulk_create(self, operations: list[OperationCreateSchema], user_id: int) -> list[Operation]:
+        if not await self.portfolio_repo.get_user_portfolio_by_id(
+                portfolio_id=operations[0].portfolio_id,
+                user_id=user_id
+        ):
+          raise NotFoundPortfolioError
+        return await self.operation_change_command_repo.bulk_create(operations=operations)
+
     async def delete(self, user_id: int, operation_id: int) -> None:
         if not await self.operation_read_command_repo.get_operation_by_id(
                 user_id=user_id,

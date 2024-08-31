@@ -34,8 +34,9 @@ class PortfolioRepo:
             new_portfolio: PortfolioCreateSchema,
             user_id: int,
     ) -> Portfolio:
-        new_portfolio.user_id = user_id
-        stmt = insert(self.model).values(new_portfolio.model_dump()).returning(self.model)
+        portfolio_data = new_portfolio.model_dump()
+        portfolio_data.update({"user_id": user_id})
+        stmt = insert(self.model).values(portfolio_data).returning(self.model)
         result = await self.session.execute(stmt)
         await self.session.commit()
         return result.scalar()

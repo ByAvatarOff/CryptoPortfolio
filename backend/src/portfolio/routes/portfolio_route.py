@@ -3,7 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from fastapi import APIRouter, Depends
-from src.portfolio.schemas.schema import PortfolioSchema, PortfolioCreateSchema
+from src.portfolio.schemas.schema import (
+    PortfolioSchema,
+    PortfolioCreateSchema,
+)
 from starlette import status
 from src.portfolio.depends import get_portfolio_controller
 

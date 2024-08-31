@@ -8,6 +8,7 @@ from src.binance_api.routes.route import binance_router
 from src.investment.routes.route import investment_router
 from src.portfolio.routes.operation_route import operation_router
 from src.portfolio.routes.portfolio_route import portfolio_router
+from src.web3.routes.route import web3_router
 
 
 app = FastAPI(
@@ -32,6 +33,7 @@ app.include_router(binance_router)
 app.include_router(investment_router)
 app.include_router(operation_router)
 app.include_router(portfolio_router)
+app.include_router(web3_router)
 
 
 origins = settings.app.origins

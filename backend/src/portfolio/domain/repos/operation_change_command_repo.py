@@ -28,6 +28,15 @@ class OperationChangeCommandRepo:
         await self.session.commit()
         return result.scalar()
 
+    async def bulk_create(
+            self,
+            operations: list[OperationCreateSchema]
+    ) -> list[Operation]:
+        operations_to_insert = [operation.model_dump() for operation in operations]
+        result = await self.session.execute(insert(self.model).returning(self.model), operations_to_insert)
+        await self.session.commit()
+        return result.scalars().all()
+
     async def delete(self, operation_id: int) -> None:
         stmt = delete(Operation).where(self.model.id == operation_id)
         await self.session.execute(stmt)

@@ -14,7 +14,6 @@ class PortfolioSchema(BaseModel):
 
 class PortfolioCreateSchema(BaseModel):
     name: str
-    user_id: int
 
 
 class OperationSchema(BaseModel):

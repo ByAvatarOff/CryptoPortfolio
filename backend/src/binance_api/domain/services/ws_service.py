@@ -1,6 +1,7 @@
-from fastapi import Depends, WebSocket, WebSocketDisconnect
+from fastapi import WebSocket, WebSocketDisconnect
 from src.portfolio.domain.repos.operation_read_command_repo import OperationReadCommandRepo
-from src.binance_api.gateways.binance.binance_websockets import BinanceWebSocketClient, WSConnectionManager
+from src.binance_api.gateways.binance.binance_websockets import BinanceWebSocketClient
+from src.core.services.ws_connection_manager import WSConnectionManager
 
 
 class BinanceWebSocketService:
