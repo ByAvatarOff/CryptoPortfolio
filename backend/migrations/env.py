@@ -19,11 +19,11 @@ config = context.config
 
 section = config.config_ini_section
 
-config.set_section_option(section, "db_user", settings.db.db_user)
-config.set_section_option(section, "db_host", settings.db.db_host)
-config.set_section_option(section, "db_name", settings.db.db_name)
-config.set_section_option(section, "db_port", str(settings.db.db_port))
-config.set_section_option(section, "db_pass", settings.db.db_pass.get_secret_value())
+config.set_section_option(section, "postgres_user", settings.db.postgres_user)
+config.set_section_option(section, "postgres_host", settings.db.postgres_host)
+config.set_section_option(section, "postgres_db", settings.db.postgres_db)
+config.set_section_option(section, "postgres_port", str(settings.db.postgres_port))
+config.set_section_option(section, "postgres_password", settings.db.postgres_password.get_secret_value())
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)

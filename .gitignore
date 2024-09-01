@@ -1,7 +1,48 @@
 /backend/.env
-.idea
-__pycache__
 /frontend/node_modules
 /frontend/build
-.pytest_cache
-.mypy_cache
+.pytest_cache/
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+*.manifest
+*.spec
+!main.spec
+
+# Unit tests / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+
+# Django stuff:
+*.log
+log.txt*
+local_settings.py
+db.sqlite3
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ruff
+.ruff_cache
+
+.idea/
+data/
+static/
+dumps/
+.vscode/

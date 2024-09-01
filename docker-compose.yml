@@ -1,13 +1,5 @@
 version: '3.8'
 
-
-networks:
-  backend_network:
-    name: backend_network
-volumes:
-  pgdata:
-
-
 services:
   frontend:
     build:
@@ -17,20 +9,21 @@ services:
       - ./frontend:/src
       - /src/node_modules
     ports:
-      - 3000:3000
+      - "3000:3000"
     environment:
       - CHOKIDAR_USEPOLLING=true
 
   backend:
+    container_name: backend
     build:
       context: ./backend
       dockerfile: Dockerfile
     volumes:
-      - ./backend:/backend/
+      - ./backend/src:/app/src/
     ports:
-      - 8000:8000
+      - "8000:8000"
     networks:
-      - backend_network
+      - backend-network
     env_file:
       - backend/.env
     depends_on:
@@ -39,18 +32,24 @@ services:
 
 
   db_back:
-    image: postgres:15.1-alpine
+    image: postgres:16-alpine
     networks:
-      - backend_network
+      - backend-network
     container_name: db_back
-    environment:
-      - POSTGRES_DB=crypto
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+    env_file:
+      - backend/.env
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: pg_isready -U postgres -p 5432
+      test: pg_isready -U ${POSTGRES_USER} -p ${POSTGRES_PORT}
       interval: 5s
       timeout: 3s
       retries: 3
+
+
+networks:
+  backend-network:
+    name: backend-network-dev
+    external: true
+volumes:
+  postgres_data:
