@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Line } from "react-chartjs-2";
 import { FC } from 'react';
-import { ListOperationContext } from './contexts/ListOperationContext';
+import { ListOperationContext } from '../../contexts/operation/ListOperationContext';
 
 import {
     Chart as ChartJS,

@@ -12,8 +12,11 @@ class InvestmentController:
         self.user = user
         self.investment_service = investment_service
 
-    async def list_tickers_stat(self) -> list[dict]:
-        return await self.investment_service.list_tickers_stat(user_id=self.user.id)
+    async def list_tickers_stat(self, portfolio_id: int) -> list[dict]:
+        return await self.investment_service.list_tickers_stat(
+            user_id=self.user.id,
+            portfolio_id=portfolio_id,
+        )
 
     async def sum_operations(self) -> list[dict]:
         return await self.investment_service.sum_operations(user_id=self.user.id)

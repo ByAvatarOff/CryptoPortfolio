@@ -15,8 +15,8 @@ class InvestmentService:
         self.operation_read_command_repo = operation_read_command_repo
         self.binance_api = binance_api
 
-    async def list_tickers_stat(self, user_id: int) -> list[dict]:
-        return await self.operation_read_command_repo.get_difference_type(user_id=user_id)
+    async def list_tickers_stat(self, user_id: int, portfolio_id: int) -> list[dict]:
+        return await self.operation_read_command_repo.get_difference_type(user_id=user_id, portfolio_id=portfolio_id)
 
     async def sum_operations(
             self,

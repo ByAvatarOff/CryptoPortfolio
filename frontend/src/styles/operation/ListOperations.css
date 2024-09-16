@@ -1,0 +1,14 @@
+.table-wrapper {
+    overflow-y: "scroll";
+    max-height: "400px";
+}
+
+.table {
+    position: 'sticky';
+    top: '0';
+}
+
+.add-button {
+    color: black;
+    cursor: pointer;
+}

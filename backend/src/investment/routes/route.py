@@ -16,14 +16,15 @@ investment_router = APIRouter(
 
 
 @investment_router.get(
-    '/list_tickers_stat/',
+    '/list_tickers_stat/{portfolio_id}/',
     response_model=list[InvestmentSchema],
     status_code=status.HTTP_200_OK
 )
 async def list_tickers_stat(
+        portfolio_id: int,
         controller: InvestmentController = Depends(get_investment_controller),
 ) -> list[dict]:
-    return await controller.list_tickers_stat()
+    return await controller.list_tickers_stat(portfolio_id=portfolio_id)
 
 
 @investment_router.get(

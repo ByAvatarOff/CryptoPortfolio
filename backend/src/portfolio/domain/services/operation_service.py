@@ -36,6 +36,9 @@ class OperationService:
             raise NotEnoughTokenOperationError
 
         return await self.operation_change_command_repo.create(new_operation=new_operation)
+    
+    async def list(self, portfolio_id: int) -> list[Operation]:
+        return await self.operation_read_command_repo.list_operation(portfolio_id=portfolio_id)
 
     async def bulk_create(self, operations: list[OperationCreateSchema], user_id: int) -> list[Operation]:
         if not await self.portfolio_repo.get_user_portfolio_by_id(

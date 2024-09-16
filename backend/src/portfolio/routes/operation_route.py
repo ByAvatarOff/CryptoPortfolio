@@ -30,6 +30,18 @@ async def create(
     return await controller.create(new_operation=new_operation)
 
 
+@operation_router.get(
+    '/{portfolio_id}/',
+    response_model=list[OperationSchema],
+    status_code=status.HTTP_200_OK
+)
+async def list(
+        portfolio_id: int,
+        controller: OperationController = Depends(get_operation_controller),
+) -> list[Operation]:
+    return await controller.list(portfolio_id=portfolio_id)
+
+
 @operation_router.delete(
     '/{operation_id}/',
     status_code=status.HTTP_204_NO_CONTENT

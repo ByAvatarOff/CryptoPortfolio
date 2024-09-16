@@ -21,14 +21,16 @@ class BinanceService:
 
     async def ticker_price_changes(
             self,
-            user_id: int
+            user_id: int,
+            portfolio_id: int,
     ) -> TimeFramePercentChanges | None:
         ticker_percent_changes = {}
 
         if not (unique_user_tickets := await self.operation_read_command_repo.get_unique_user_ticker(
-                user_id=user_id
+                user_id=user_id,
+                portfolio_id=portfolio_id,
         )):
-            return None
+            return TimeFramePercentChanges
         list_tickers = InvestmentUtils.prepare_tickers_for_get_price(list_tickers=unique_user_tickets)
 
         for timeframe in TimeframeChangesEnum:
@@ -38,7 +40,7 @@ class BinanceService:
                     period=timeframe
                 ))
             ticker_percent_changes.update({
-                    timeframe: price_change
+                    f"timeframe_{timeframe}": price_change
                 }
             )
         return TimeFramePercentChanges(data=ticker_percent_changes)

@@ -12,4 +12,4 @@ class TickerChanges(BaseModel):
 
 
 class TimeFramePercentChanges(BaseModel):
-    data: dict[str, list[TickerChanges]] = Field(default_factory=dict)
+    data: dict[str, list[TickerChanges]] | None = Field(default_factory=dict)

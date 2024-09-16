@@ -55,12 +55,23 @@ class OperationReadCommandRepo:
         if result - new_operation.amount >= 0:
             return True
 
-    async def get_unique_user_ticker(self, user_id: int) -> list[dict]:
-        stmt = select(distinct(self.model.ticker)).join(Portfolio).where(Portfolio.user_id == user_id)
+    async def get_unique_user_ticker(self, user_id: int, portfolio_id: int) -> list[dict]:
+        stmt = (
+            select(distinct(self.model.ticker))
+            .join(Portfolio)
+            .where(
+                Portfolio.user_id == user_id,
+                self.model.portfolio_id == portfolio_id,
+            )
+        )
         result = await self.session.execute(stmt)
         return result.scalars().all()
 
-    async def get_difference_type(self, user_id: int) -> list[dict]:
+    async def get_difference_type(
+            self, 
+            user_id: int,
+            portfolio_id: int,
+        ) -> list[dict]:
         cte_buy_sell = select(
             self.model.ticker,
             (
@@ -71,7 +82,7 @@ class OperationReadCommandRepo:
                     func.sum(case((self.model.type == OperationTypeEnum.BUY, self.model.amount * self.model.price), else_=0)) -
                     func.sum(case((self.model.type == OperationTypeEnum.SELL, self.model.amount * self.model.price), else_=0))
             ).label('price_difference'),
-        ).join(Portfolio).where(Portfolio.user_id == user_id).group_by(self.model.ticker).cte()
+        ).join(Portfolio).where(Portfolio.user_id == user_id, self.model.portfolio_id == portfolio_id).group_by(self.model.ticker).cte()
 
         stmt = select(
             cte_buy_sell.c.ticker,
@@ -100,3 +111,11 @@ class OperationReadCommandRepo:
 
         result = await self.session.execute(stmt)
         return result.mappings().first()
+    
+    async def list_operation(
+            self,
+            portfolio_id: int
+    ) -> list[Operation]:
+        stmt = select(self.model).where(self.model.portfolio_id == portfolio_id)
+        result = await self.session.execute(stmt)
+        return result.scalars().all()

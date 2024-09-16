@@ -1,7 +1,7 @@
 import { FC, useEffect, useContext, useState } from 'react';
-import { PortfolioPriceContext } from "./contexts/OnlinePortfolioPriceContext";
+import { PortfolioPriceContext } from "../../contexts/operation/OnlinePortfolioPriceContext";
 import { SetPortfolioPrice } from "../../request/request";
-import { PortfolioPrices } from "./types";
+import { PortfolioPrices } from "../../types/portfolio/types";
 
 
 const SelectPeriodprofitComponent: FC = () => {

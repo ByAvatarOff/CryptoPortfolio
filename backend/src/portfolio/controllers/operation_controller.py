@@ -25,6 +25,9 @@ class OperationController:
             new_operation=new_operation,
             user_id=self.user.id,
         )
+    
+    async def list(self, portfolio_id: int) -> list[Operation]:
+        return await self.operation_service.list(portfolio_id=portfolio_id)
 
     async def delete(self, operation_id: int) -> None:
         await self.operation_service.delete(

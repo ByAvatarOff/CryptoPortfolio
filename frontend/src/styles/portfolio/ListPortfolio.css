@@ -1,0 +1,60 @@
+.sidebar {
+    height: 100%;
+    width: 270px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    padding-top: 20px;
+    overflow-y: auto;
+    color: white;
+  }
+  
+  .menuItem {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    text-decoration: none;
+    font-size: 18px;
+    color: white;
+    border-bottom: 1px solid #575757;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  
+  .icon {
+    margin-right: 10px;
+    border-radius: 50%;
+  }
+  
+  .portfolioName {
+    display: block;
+    font-weight: bold;
+  }
+  
+  .portfolioValue {
+    display: block;
+    color: #ccc;
+  }
+  
+  .createPortfolio {
+    padding: 10px 15px;
+    text-decoration: none;
+    font-size: 18px;
+    color: white;
+    display: block;
+    cursor: pointer;
+  }
+
+  .deleteIcon {
+    cursor: pointer;
+    font-size: 20px;
+    margin-left: 10px;
+  }
+
+  .selected {
+    background-color: #575757;
+  }
+
+
+  

@@ -22,14 +22,15 @@ async def list_all_tickers(
 
 
 @binance_router.get(
-    '/ticker_price_changed/',
+    '/ticker_price_changed/{portfolio_id}',
     response_model=TimeFramePercentChanges,
     status_code=status.HTTP_200_OK
 )
 async def ticker_price_changed(
+        portfolio_id: int,
         binance_controller: BinanceController = Depends(get_binance_controller)
 ) -> TimeFramePercentChanges:
-    return await binance_controller.ticker_price_changes()
+    return await binance_controller.ticker_price_changes(portfolio_id=portfolio_id)
 
 
 @binance_router.websocket('/ws/{access_token}')

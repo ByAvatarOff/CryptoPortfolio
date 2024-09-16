@@ -6,7 +6,7 @@ import {
   ReactNode
 } from 'react';
 
-import { PortfolioPrices } from '../types';
+import { PortfolioPrices } from '../../types/portfolio/types';
 
 
 type PortfolioPriceStateType = {

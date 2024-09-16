@@ -1,19 +1,34 @@
 import { useContext, useState, useEffect } from 'react';
 import { Chart, ArcElement } from 'chart.js'
 import { FC } from 'react';
-import { ListInvestmentsContext } from './contexts/ListInvestmentsContext';
 import { requestTemplate } from '../../request/axiosRequest';
 import ChartDoughnutComponent from './ChartDoughnutComponent';
-import { PriceData, TimeFrameChanges, TimeFrameChangesList } from './types';
+import { PriceData, TimeFrameChanges, TimeFrameChangesList } from '../../types/portfolio/types';
+import { ListInvestmentsContext } from '../../contexts/operation/ListInvestmentsContext';
+import { PortfolioIdProps } from '../../types/portfolio/types';
 
-const ListInvestmentsComponent: FC = () => {
+
+const ListInvestmentsComponent: FC<PortfolioIdProps> = ({ portfolioId }) => {
     const [prices, setPrices] = useState<PriceData[]>([]);
     const [priceChange, setPriceChange] = useState<TimeFrameChanges>({ "timeframe_1d": [], "timeframe_7d": [] });
+    const { investments, setInvestments } = useContext(ListInvestmentsContext);
 
     useEffect(() => {
-        requestTemplate.get('api/binance/ticker_price_changed/').then((response) => {
-            setPriceChange(response.data)
-        }).catch(error => console.log(error));
+        requestTemplate.get(`api/investment/list_tickers_stat/${portfolioId}`).then((response) => {
+            setInvestments(response.data);
+        })
+            .catch((error) => {
+                console.error("Error occured with get list tickers stat", error);
+            });
+    }, [setInvestments]);
+
+    useEffect(() => {
+        requestTemplate.get(`api/binance/ticker_price_changed/${portfolioId}`).then((response) => {
+            setPriceChange(response.data.data)
+        })
+        .catch((error) => {
+            console.error("Error occured with get tickers prices", error);
+        });
     }, []);
 
     const access = localStorage.getItem('access')
@@ -39,9 +54,8 @@ const ListInvestmentsComponent: FC = () => {
     socket.onclose = function (event) {
         socket.close()
     };
-
-    const { investments, setInvestments } = useContext(ListInvestmentsContext);
-    Chart.register(ArcElement);
+    
+    // Chart.register(ArcElement);
 
     const findTickerPrice = (list_prices: PriceData[] | TimeFrameChangesList[], ticker: string) => {
         if (list_prices.length === 0) return 0
@@ -53,8 +67,7 @@ const ListInvestmentsComponent: FC = () => {
     }
 
     return (
-        <div id="portsummary" className="collapse">
-            <br />
+        <div>
             <table id="pstable" className="table">
                 <thead>
                     <tr>
@@ -72,7 +85,7 @@ const ListInvestmentsComponent: FC = () => {
                         <tr>
                             <td><span key={index}>{investment.ticker}</span></td>
                             <td><span key={index}>{investment.amount_difference}</span></td>
-                            <td><div style={{ "background": "#F5FFFA" }} ><span key={index}>{investment.avg_price}</span></div></td>
+                            <td><span key={index}>{investment.avg_price}</span></td>
                             <td><span key={index}>{investment.price_difference}</span></td>
                             <td><span key={index}>{(prices[findTickerPrice(prices, investment.ticker)]?.price)}</span></td>
                             <td><span key={index}>{(priceChange.timeframe_1d[findTickerPrice(priceChange.timeframe_1d, investment.ticker)]?.percent)}</span></td>
@@ -82,7 +95,7 @@ const ListInvestmentsComponent: FC = () => {
 
                 </tbody>
             </table>
-            <ChartDoughnutComponent />
+            {/* <ChartDoughnutComponent /> */}
         </div >
     )
 }
