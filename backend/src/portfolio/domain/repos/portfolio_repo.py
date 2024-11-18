@@ -31,12 +31,16 @@ class PortfolioRepo:
 
     async def create(
             self,
-            new_portfolio: PortfolioCreateSchema,
+            portfolio_name: str,
+            image: str,
             user_id: int,
     ) -> Portfolio:
-        portfolio_data = new_portfolio.model_dump()
-        portfolio_data.update({"user_id": user_id})
-        stmt = insert(self.model).values(portfolio_data).returning(self.model)
+        to_create_data = {
+            "name": portfolio_name,
+            "user_id": user_id,
+            "image": image,
+        }
+        stmt = insert(self.model).values(to_create_data).returning(self.model)
         result = await self.session.execute(stmt)
         await self.session.commit()
         return result.scalar()

@@ -10,6 +10,7 @@ class Portfolio(Base):
     __tablename__ = 'portfolio'
 
     name: Mapped[str]
+    image: Mapped[str]
 
     user_id: Mapped[int] = mapped_column(ForeignKey(User.id, ondelete='CASCADE'))
     operations: Mapped[list["Operation"]] = relationship("Operation", back_populates="portfolio")

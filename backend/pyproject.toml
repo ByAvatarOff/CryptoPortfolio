@@ -21,6 +21,7 @@ asyncpg = "^0.29.0"
 aiohttp = "^3.10.5"
 moralis = "^0.1.49"
 uvicorn = "^0.30.6"
+aiofiles = "^24.1.0"
 
 
 [build-system]

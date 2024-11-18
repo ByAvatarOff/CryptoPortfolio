@@ -2,6 +2,7 @@ export type PortfolioType = {
     id: number
     name: string
     user_id: number
+    image: string
   }
 
 

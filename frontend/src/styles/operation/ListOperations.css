@@ -1,11 +1,12 @@
 .table-wrapper {
-    overflow-y: "scroll";
-    max-height: "400px";
+    overflow-y: scroll;
+    max-height: 400px;
 }
 
 .table {
-    position: 'sticky';
-    top: '0';
+    /*position: sticky;*/
+    top: 0;
+    font-size: 22px;
 }
 
 .add-button {

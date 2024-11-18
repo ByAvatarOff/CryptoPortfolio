@@ -1,0 +1,105 @@
+.portfolio-create-modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.portfolio-create-button-modal-content {
+  position: relative;
+  background-color: #232F2F;
+  padding: 30px;
+  border-radius: 10px;
+  width: 400px;
+  max-width: 100%;
+}
+
+.portfolio-create-close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+  font-size: 28px;
+  color: #fff;
+}
+
+.portfolio-create-form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.portfolio-create-label {
+  margin-bottom: 15px;
+  font-size: 20px;
+  color: #fff;
+}
+
+.portfolio-create-file-input-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.portfolio-create-file-input-label {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #192623;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.portfolio-create-file-icon {
+  margin-right: 10px;
+}
+
+.portfolio-create-file-input {
+  display: none;
+}
+
+.portfolio-create-file-uploaded-message {
+  margin-left: 10px;
+  font-size: 16px;
+  color: #28a745;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.portfolio-create-check-icon {
+  margin-right: 5px;
+}
+
+.portfolio-create-text-input {
+  padding: 12px;
+  border: 1px solid #555;
+  border-radius: 5px;
+  font-size: 18px;
+  background-color: #333;
+  color: #fff;
+}
+
+.portfolio-create-button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  font-size: 18px;
+}
+
+.portfolio-create-button:hover {
+  background-color: #0056b3;
+}

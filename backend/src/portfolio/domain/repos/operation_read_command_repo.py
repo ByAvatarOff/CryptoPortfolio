@@ -97,13 +97,13 @@ class OperationReadCommandRepo:
         result = await self.session.execute(stmt)
         return result.mappings().all()
 
-    async def get_user_portfolio_price(self, user_id: int) -> dict[str, int]:
+    async def get_user_portfolio_price(self, user_id: int, portfolio_id: int) -> dict[str, int]:
         cte_price_difference = select(
             (
                     func.sum(case((self.model.type == OperationTypeEnum.BUY, self.model.amount * self.model.price), else_=0)) -
                     func.sum(case((self.model.type == OperationTypeEnum.SELL, self.model.amount * self.model.price), else_=0))
             ).label('price_difference')
-        ).where(Portfolio.user_id == user_id).group_by(self.model.ticker).cte()
+        ).join(Portfolio).where(Portfolio.user_id == user_id, self.model.portfolio_id == portfolio_id).group_by(self.model.ticker).cte()
 
         stmt = select(
             func.sum(cte_price_difference.c.price_difference).label('total_price')

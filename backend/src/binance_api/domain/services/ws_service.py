@@ -16,12 +16,16 @@ class BinanceWebSocketService:
 
     async def ws_timeframe_changes(
             self,
+            portfolio_id: int,
             websocket: WebSocket,
             access_token: str
     ):
         manager = WSConnectionManager(access_token=access_token)
         await manager.connect(websocket)
-        list_tickers = await self.operation_read_command_repo.get_unique_user_ticker(user_id=manager.user_id)
+        list_tickers = await self.operation_read_command_repo.get_unique_user_ticker(
+            user_id=manager.user_id,
+            portfolio_id=portfolio_id
+        )
         try:
             while True:
                 await self.binance_ws_client.get_ticker_prices(

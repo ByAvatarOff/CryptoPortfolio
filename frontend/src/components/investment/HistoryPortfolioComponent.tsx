@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { Line } from "react-chartjs-2";
 import { FC } from 'react';
 import { ListOperationContext } from '../../contexts/operation/ListOperationContext';
-
+import { PortfolioIdProps } from '../../types/portfolio/types';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -12,15 +12,15 @@ import {
 } from 'chart.js';
 
 
-const HistoryPortfolioComponent: FC = () => {
+const HistoryPortfolioComponent: FC<PortfolioIdProps> = ({ portfolioId }) => {
     const ListOperation = useContext(ListOperationContext);
     const addDates = ListOperation.operations?.map(item => new Date(item.add_date).toDateString());
     const collectPricesForChart = (): number[] => {
         let total = 0;
         return ListOperation.operations?.map((object) => {
-            object.type === 'buy' ?
-            total += object.price * object.amount :
-            total -= object.price * object.amount;
+            object.type === 'BUY' ?
+                total += object.price * object.amount :
+                total -= object.price * object.amount;
             return total;
         }) || [];
     };
@@ -52,11 +52,9 @@ const HistoryPortfolioComponent: FC = () => {
     };
 
     return (
-        <div id="currstat" className="collapse">
-            <div className='mt-3 mb-5'>
-                <Line options={options} height={500} width={800} data={data} />
-            </div>
-        </div >
+        <div className='mt-5 mb-5'>
+            <Line options={options} height={500} width={800} data={data} />
+        </div>
 
     )
 }

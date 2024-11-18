@@ -11,21 +11,17 @@ export const Layout = () => {
     const handleLogout = () => {
         setLoginButton(false)
         localStorage.clear()
-        navigate('/')
+        navigate('/login')
     };
 
     return (
         <div>
             {loginButton ? (
-                <div className="buttonGroup">
-                    <button className="btn btn-light btn-lg" onClick={handleLogout}>Logout</button>
-                    <Link to='/'><button className="btn btn-light btn-lg mx-2">Home</button></Link>
+                <div className="auth-container">
+                    <button className="button-logout" onClick={handleLogout}>Logout</button>
                 </div>
             ) : (
-                <div className="buttonGroup">
-                    <Link to='/login'><button className="btn btn-light btn-lg" data-abc="true">Login</button></Link>
-                    <Link to='/'><button className="btn btn-light btn-lg mx-2">Home</button></Link>
-                </div>
+                <div></div>
             )}
             <Outlet />
         </div>

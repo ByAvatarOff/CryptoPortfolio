@@ -6,9 +6,10 @@ from src.auth.models import User
 from src.portfolio.domain.services.portfolio_service import PortfolioService
 
 
+
 if TYPE_CHECKING:
     from src.portfolio.models.models import Portfolio
-    from src.portfolio.schemas.schema import PortfolioCreateSchema
+    from fastapi import UploadFile
 
 
 class PortfolioController:
@@ -20,9 +21,10 @@ class PortfolioController:
         self.user = user
         self.portfolio_service = portfolio_service
 
-    async def create(self, new_portfolio: PortfolioCreateSchema) -> Portfolio:
+    async def create(self, name: str, image: UploadFile) -> Portfolio:
         return await self.portfolio_service.create(
-            new_portfolio=new_portfolio,
+            portfolio_name=name,
+            image=image,
             user_id=self.user.id
         )
 

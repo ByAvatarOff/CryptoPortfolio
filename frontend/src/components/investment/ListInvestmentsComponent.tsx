@@ -1,8 +1,6 @@
 import { useContext, useState, useEffect } from 'react';
-import { Chart, ArcElement } from 'chart.js'
 import { FC } from 'react';
 import { requestTemplate } from '../../request/axiosRequest';
-import ChartDoughnutComponent from './ChartDoughnutComponent';
 import { PriceData, TimeFrameChanges, TimeFrameChangesList } from '../../types/portfolio/types';
 import { ListInvestmentsContext } from '../../contexts/operation/ListInvestmentsContext';
 import { PortfolioIdProps } from '../../types/portfolio/types';
@@ -20,51 +18,54 @@ const ListInvestmentsComponent: FC<PortfolioIdProps> = ({ portfolioId }) => {
             .catch((error) => {
                 console.error("Error occured with get list tickers stat", error);
             });
-    }, [setInvestments]);
+    }, [setInvestments, portfolioId]);
 
     useEffect(() => {
         requestTemplate.get(`api/binance/ticker_price_changed/${portfolioId}`).then((response) => {
             setPriceChange(response.data.data)
         })
-        .catch((error) => {
-            console.error("Error occured with get tickers prices", error);
-        });
-    }, []);
+            .catch((error) => {
+                console.error("Error occured with get tickers prices", error);
+            });
+    }, [portfolioId]);
 
-    const access = localStorage.getItem('access')
+    useEffect(() => {
+        const access = localStorage.getItem('access');
+        const socket = new WebSocket(`ws://127.0.0.1:8000/api/binance/ws/${portfolioId}/${access}`);
 
-    const socket = new WebSocket(`ws://127.0.0.1:8000/api/binance/ws/${access}`);
-    socket.onmessage = function (event) {
-        let data = JSON.parse(event.data)
-        setPrices(prevPrices => {
-            const index = findTickerPrice(prevPrices, data.ticker)
-            if (index === 0) {
-                return [...prevPrices, data];
-            }
-            const updatedPrices = [...prevPrices];
-            updatedPrices[index].price = data.price;
-            return updatedPrices;
+        socket.onmessage = function (event) {
+            let data = JSON.parse(event.data);
+            setPrices(prevPrices => {
+                const index = findTickerPriceInPrices(prevPrices, data.ticker);
+                if (index === -1) {
+                    return [...prevPrices, data];
+                }
+                const updatedPrices = [...prevPrices];
+                updatedPrices[index] = data;
+                return updatedPrices;
+            });
+        };
 
-        });
+        socket.onerror = function (event) {
+            socket.close();
+        };
+
+        socket.onclose = function (event) {
+            socket.close();
+        };
+
+        return () => {
+            socket.close();
+        };
+    }, [portfolioId]);
+
+    const findTickerPriceInPrices = (list_prices: PriceData[], ticker: string) => {
+        return list_prices.findIndex(price => price.ticker === ticker);
     };
-    socket.onerror = function (event) {
-        socket.close()
-    };
 
-    socket.onclose = function (event) {
-        socket.close()
+    const findTickerPriceInChanges = (list_changes: TimeFrameChangesList[], ticker: string) => {
+        return list_changes.findIndex(change => change.ticker === ticker);
     };
-    
-    // Chart.register(ArcElement);
-
-    const findTickerPrice = (list_prices: PriceData[] | TimeFrameChangesList[], ticker: string) => {
-        if (list_prices.length === 0) return 0
-        const index = list_prices.findIndex(price => price.ticker === ticker);
-        if (index === -1) {
-            return 0
-        }
-        return index
-    }
 
     return (
         <div>
@@ -82,22 +83,20 @@ const ListInvestmentsComponent: FC<PortfolioIdProps> = ({ portfolioId }) => {
                 </thead>
                 <tbody>
                     {investments?.map((investment, index) => (
-                        <tr>
-                            <td><span key={index}>{investment.ticker}</span></td>
-                            <td><span key={index}>{investment.amount_difference}</span></td>
-                            <td><span key={index}>{investment.avg_price}</span></td>
-                            <td><span key={index}>{investment.price_difference}</span></td>
-                            <td><span key={index}>{(prices[findTickerPrice(prices, investment.ticker)]?.price)}</span></td>
-                            <td><span key={index}>{(priceChange.timeframe_1d[findTickerPrice(priceChange.timeframe_1d, investment.ticker)]?.percent)}</span></td>
-                            <td><span key={index}>{(priceChange.timeframe_7d[findTickerPrice(priceChange.timeframe_7d, investment.ticker)]?.percent)}</span></td>
+                        <tr key={index}>
+                            <td>{investment.ticker}</td>
+                            <td>{investment.amount_difference}</td>
+                            <td>{investment.avg_price}</td>
+                            <td>{investment.price_difference}</td>
+                            <td>{prices[findTickerPriceInPrices(prices, investment.ticker)]?.price}</td>
+                            <td>{priceChange.timeframe_1d[findTickerPriceInChanges(priceChange.timeframe_1d, investment.ticker)]?.percent}</td>
+                            <td>{priceChange.timeframe_7d[findTickerPriceInChanges(priceChange.timeframe_7d, investment.ticker)]?.percent}</td>
                         </tr>
                     ))}
-
                 </tbody>
             </table>
-            {/* <ChartDoughnutComponent /> */}
-        </div >
-    )
-}
+        </div>
+    );
+};
 
 export default ListInvestmentsComponent;

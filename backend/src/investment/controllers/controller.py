@@ -18,11 +18,15 @@ class InvestmentController:
             portfolio_id=portfolio_id,
         )
 
-    async def sum_operations(self) -> list[dict]:
-        return await self.investment_service.sum_operations(user_id=self.user.id)
+    async def sum_operations(self, portfolio_id: int) -> list[dict]:
+        return await self.investment_service.sum_operations(
+            user_id=self.user.id,
+            portfolio_id=portfolio_id,
+        )
 
-    async def all_time_profit(self, period: str) -> AllTimeProfitSchema:
+    async def all_time_profit(self, portfolio_id: int, period: str) -> AllTimeProfitSchema:
         return await self.investment_service.all_time_profit(
             user_id=self.user.id,
+            portfolio_id=portfolio_id,
             period=period
         )

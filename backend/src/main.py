@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.staticfiles import StaticFiles
 
 from src.core.settings import settings
 from src.auth.base_config import auth_backend, fastapi_users
@@ -45,3 +46,5 @@ app.add_middleware(
     allow_methods=['*'],
     allow_headers=['*'],
 )
+
+app.mount("/uploads", StaticFiles(directory=settings.app.upload_image_dir), name="uploads")

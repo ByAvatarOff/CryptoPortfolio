@@ -20,9 +20,14 @@ class InvestmentService:
 
     async def sum_operations(
             self,
-            user_id: int
+            user_id: int,
+            portfolio_id: int,
     ) -> list[dict]:
-        if not (list_difference := await self.operation_read_command_repo.get_difference_type(user_id=user_id)):
+        if not (list_difference := await self.operation_read_command_repo.get_difference_type(
+            user_id=user_id, 
+            portfolio_id=portfolio_id
+        )
+                ):
             return []
         list_tickers = InvestmentUtils.prepare_tickers_for_get_price(list_tickers=list_difference)
         list_ticker_current_price = await self.binance_api.get_ticker_current_price(list_tickers=list_tickers)
@@ -35,9 +40,14 @@ class InvestmentService:
     async def all_time_profit(
             self,
             user_id: int,
+            portfolio_id: int,
             period: str
     ) -> AllTimeProfitSchema:
-        if not (list_difference := await self.operation_read_command_repo.get_difference_type(user_id=user_id)):
+        if not (list_difference := await self.operation_read_command_repo.get_difference_type(
+            user_id=user_id,
+            portfolio_id=portfolio_id,
+        )
+                ):
             return AllTimeProfitSchema(profit=0)
 
         list_tickers = InvestmentUtils.prepare_tickers_for_get_price(list_tickers=list_difference)
@@ -45,15 +55,18 @@ class InvestmentService:
             list_tickers=list_tickers,
             period=period,
         )
+        print(list_ticker_current_price)
         binance_actives_price = await InvestmentUtils.update_current_ticker_price(
             list_difference=list_difference,
             list_dict_prices=list_ticker_current_price
         )
+        print(binance_actives_price)
         user_actives_total_price = (
-            await self.operation_read_command_repo.get_user_portfolio_price(user_id=user_id)
+            await self.operation_read_command_repo.get_user_portfolio_price(user_id=user_id, portfolio_id=portfolio_id)
         ).get('total_price', 0)
+        print(user_actives_total_price)
         return AllTimeProfitSchema.model_validate(
             {
-                'profit': sum(map(lambda x: x.get('price', 0), binance_actives_price)) - user_actives_total_price
+                'profit': f"{sum(map(lambda x: x.get('price', 0), binance_actives_price)) - user_actives_total_price:.2f}"
             }
         )

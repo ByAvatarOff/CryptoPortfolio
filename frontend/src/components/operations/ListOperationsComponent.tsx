@@ -11,6 +11,8 @@ import { ListOperationContext } from '../../contexts/operation/ListOperationCont
 import { PortfolioIdProps } from '../../types/portfolio/types';
 import '../../styles/operation/ListOperations.css';
 import { OperationType } from '../../types/operation/types';
+import PortfolioCreateComponent from "../portfolio/PortfolioCreateComponent";
+import PortfolioWalletImportComponent from "../portfolio/PortfolioWalletImportComponent";
 
 
 
@@ -32,7 +34,7 @@ const ListOperationsComponent: FC<PortfolioIdProps> = ({ portfolioId }) => {
     <div>
       <div className="table-wrapper">
         <div className="add-button" onClick={() => setIsModalOperationOpen(true)}>
-          + Add transaction
+          <span className="createPortfolio">+ Add transaction</span>
         </div>
         <CreateOperationComponent portfolioId={portfolioId} isOpen={isModalOperationOpen} onClose={() => setIsModalOperationOpen(false)} />
         <table id="dptable" className="table">

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from fastapi import APIRouter, Depends
-from src.web3.schemas.schema import Web3PortfolioCreateSchema
+from fastapi import APIRouter, Depends, UploadFile, File, Form
+from src.web3.schemas.schema import Web3Addresses
 from starlette import status
 from src.web3.depends import get_web3_controller
 from src.portfolio.schemas.schema import PortfolioSchema
@@ -18,12 +18,14 @@ web3_router = APIRouter(
 )
 
 @web3_router.post(
-    "/web3/create_portfolio/{address}",
+    "/create_portfolio/",
     response_model=PortfolioSchema,
     status_code=status.HTTP_200_OK
 )
 async def create_web3_portfolio(
-        web3_data: Web3PortfolioCreateSchema,
+        web3_data: list = Form(...),
+        name: str = Form(...),
+        image: UploadFile = File(...),
         controller: Web3Controller = Depends(get_web3_controller),
 ):
-    return await controller.create_web3_portfolio(web3_data=web3_data)
+    return await controller.create_web3_portfolio(name=name, image=image, web3_data=web3_data)

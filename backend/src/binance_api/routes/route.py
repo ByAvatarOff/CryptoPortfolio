@@ -33,10 +33,15 @@ async def ticker_price_changed(
     return await binance_controller.ticker_price_changes(portfolio_id=portfolio_id)
 
 
-@binance_router.websocket('/ws/{access_token}')
+@binance_router.websocket('/ws/{portfolio_id}/{access_token}')
 async def ws_timeframe_changes(
+        portfolio_id: int,
         access_token: str,
         websocket: WebSocket,
         binance_service: BinanceWebSocketService = Depends(get_binance_ws_service)
 ):
-    await binance_service.ws_timeframe_changes(websocket=websocket, access_token=access_token)
+    await binance_service.ws_timeframe_changes(
+        websocket=websocket,
+        access_token=access_token,
+        portfolio_id=portfolio_id
+    )

@@ -24,4 +24,4 @@ class WSConnectionManager:
 
     async def send_json_message(self, message: str, websocket: WebSocket) -> None:
         await websocket.send_json(message)
-        await asyncio.sleep(2)
+        await asyncio.sleep(1)

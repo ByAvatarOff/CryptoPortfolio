@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from src.web3.schemas.schema import Web3PortfolioCreateSchema, Web3Addresses
+from src.web3.schemas.schema import Web3Addresses
 from src.portfolio.schemas.schema import OperationCreateSchema
 from src.portfolio.schemas.enum import OperationTypeEnum
 from src.binance_api.gateways.binance.binance_http import BinanceAPI
@@ -57,12 +57,12 @@ class Web3Service:
 
     async def get_waller_info(
             self,
-            web3_data: Web3PortfolioCreateSchema,
+            web3_data: list[Web3Addresses],
             portfolio_id: int
     ) -> list[OperationCreateSchema]:
         wallet_tickers, _ = self.thread_pool.run_tasks(
             self._process_wallet_active,
-            web3_data.data,
+            web3_data,
             portfolio_id=portfolio_id
         )
         results, _ = await self.async_task_pool.run_tasks(self._check_ticker_exists, wallet_tickers)

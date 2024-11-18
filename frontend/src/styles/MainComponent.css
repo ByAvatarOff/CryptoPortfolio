@@ -4,8 +4,41 @@
 }
 
 .header {
-  text-align: center;
+  text-align: left;
   margin-bottom: 20px;
+}
+
+.profitSection {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.timeFrameButtons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.timeFrameButtons button {
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: #284141;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  font-size: 16px;
+}
+
+.timeFrameButtons button:hover {
+  background-color: #0056b3;
+  color: #FFFFFF;
+}
+
+.timeFrameButtons button.active {
+  background-color: #0056b3;
+  color: #FFFFFF;
 }
 
 .operationsContent {
@@ -22,18 +55,18 @@
 .tab {
   padding: 20px;
   cursor: pointer;
-  background-color: #f0f0f0;
+  background-color: #284141;
   border-radius: 10px;
   transition: transform 0.3s ease, background-color 0.3s ease;
   text-align: center;
 }
 
 .tab:hover {
-  background-color: #e0e0e0;
+  background-color: #0056b3;
   transform: scale(1.05);
 }
 
 .tab.active {
-  background-color: #007bff;
+  background-color: #0363ce;
   color: white;
 }

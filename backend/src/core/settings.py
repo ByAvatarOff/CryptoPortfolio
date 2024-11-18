@@ -1,3 +1,5 @@
+import os
+
 from functools import cache
 from pydantic import SecretStr
 
@@ -5,10 +7,13 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class AppSettings(BaseSettings):
+    base_dir: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     secret_auth: str
     moralis_api_key: str
     origins: list[str] = ['http://localhost:3000', ]
     app_currency: str = "USDT"
+    allow_upload_types: list[str] = ["image/jpeg", "image/jpg", "image/png"]
+    upload_image_dir: str = os.path.join(base_dir, 'uploads')
 
     app_name: str = "Portfolio app"
     description: str = "Portfolio app"

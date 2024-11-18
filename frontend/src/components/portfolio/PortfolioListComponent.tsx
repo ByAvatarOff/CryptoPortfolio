@@ -1,9 +1,10 @@
 import { useEffect, useContext, useState, FC } from 'react';
-import { requestTemplate } from '../../request/axiosRequest';
+import { requestTemplate, BASE_URL } from '../../request/axiosRequest';
 import { ListPortfolioContext } from '../../contexts/portfolio/ListPortfolioContext';
 import { PortfolioType } from '../../types/portfolio/types';
 import '../../styles/portfolio/ListPortfolio.css';
 import PortfolioCreateComponent from './PortfolioCreateComponent';
+import PortfolioWalletImportComponent from './PortfolioWalletImportComponent';
 
 
 interface PortfolioListComponentProps {
@@ -13,7 +14,8 @@ interface PortfolioListComponentProps {
 
 const PortfolioListComponent: FC<PortfolioListComponentProps> = ({ onSelectPortfolio }) => {
   const { portfolios, setPortfolios } = useContext(ListPortfolioContext);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [selectedPortfolioId, setSelectedPortfolioId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -29,11 +31,6 @@ const PortfolioListComponent: FC<PortfolioListComponentProps> = ({ onSelectPortf
         console.error("Error occured with get list portfolio", error);
       });
   }, [setPortfolios]);
-
-  const getRandomImage = () => {
-    const randomId = Math.floor(Math.random() * 1000);
-    return `https://loremflickr.com/40/40?random=${randomId}`;
-  };
 
   const handleDelete = (id: number) => {
     requestTemplate.delete(`api/portfolio/${id}/`)
@@ -58,10 +55,9 @@ const PortfolioListComponent: FC<PortfolioListComponentProps> = ({ onSelectPortf
           className={`menuItem ${selectedPortfolioId === portfolio.id ? 'selected' : ''}`}
           onClick={() => handleSelect(portfolio.id)}
         >
-          <img src={getRandomImage()} alt="Random" className="icon" />
+          <img src={`${BASE_URL}uploads/${portfolio.image}`} alt={portfolio.name} className="icon" />
           <div>
             <span className="portfolioName">{portfolio.name}</span>
-            <span className="portfolioValue">${(Math.random() * 10000).toFixed(2)}</span>
           </div>
           <span
             className="deleteIcon"
@@ -76,10 +72,14 @@ const PortfolioListComponent: FC<PortfolioListComponentProps> = ({ onSelectPortf
           </span>
         </div>
       ))}
-      <div className="menuItem" onClick={() => setIsModalOpen(true)}>
-        <span className="createPortfolio">+ Create portfolio</span>
-      </div>
-      <PortfolioCreateComponent isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        <div className="menuItem" onClick={() => setIsCreateModalOpen(true)}>
+            <span className="createPortfolio">+ Create portfolio</span>
+        </div>
+        <div className="menuItem" onClick={() => setIsImportModalOpen(true)}>
+            <span className="createPortfolio">+ Import wallet</span>
+        </div>
+        <PortfolioCreateComponent isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} />
+        <PortfolioWalletImportComponent isOpen={isImportModalOpen} onClose={() => setIsImportModalOpen(false)} />
     </div>
   );
 };

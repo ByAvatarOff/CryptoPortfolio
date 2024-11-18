@@ -9,6 +9,7 @@ class PortfolioSchema(BaseModel):
 
     id: int
     name: str
+    image: str
     user_id: int
 
 

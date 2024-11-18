@@ -1,4 +1,4 @@
-.modal {
+.create-operation-modal {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8,59 +8,75 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-  }
-  
-  .modalContent {
+}
+
+.create-operation-modal-content {
     position: relative;
-    background-color: #111;
-    padding: 20px;
-    border-radius: 5px;
+    background-color: #232F2F;
+    padding: 30px;
+    border-radius: 10px;
     width: 400px;
     max-width: 100%;
-  }
-  
-  .closeButton {
+}
+
+.create-operation-close-button {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 15px;
+    right: 15px;
     cursor: pointer;
-    font-size: 20px;
-    color: whitesmoke;
-  }
-  
-  .formGroup {
+    font-size: 28px;
+    color: #fff;
+}
+
+.create-operation-form-group {
     display: flex;
     flex-direction: column;
-    margin-bottom: 10px;
-  }
-  
-  label {
-    margin-bottom: 10px;
-    color: whitesmoke;
-    font-size: 20px;
-  }
-  
-  input {
+    margin-bottom: 8px;
+}
+
+.create-operation-form-control {
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #444;
     border-radius: 4px;
-    font-size: 24px;
-  }
-  
-  .submitButton {
+    font-size: 16px;
+    background-color: #333;
+    color: #fff;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.create-operation-label {
+    margin-bottom: 5px;
+    font-size: 20px;
+    color: #fff;
+}
+
+.create-operation-submit-button {
     display: block;
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
     margin-top: 20px;
-    text-align: center;
-    font-size: 20px;
-  }
-  
-  .submitButton:hover {
+    font-size: 18px;
+}
+
+.create-operation-submit-button:hover {
     background-color: #0056b3;
-  }
+}
+
+.create-operation-select {
+    background-color: #333;
+    color: #fff;
+    font-size: 18px;
+    height: 40px;
+    width: 250px;
+}
+
+#ticker {
+    max-height: 150px;
+    overflow-y: auto;
+}

@@ -1,7 +1,6 @@
 import axios from "axios";
 
-
-let BASE_URL = 'http://127.0.0.1:8000/';
+export const BASE_URL = 'http://127.0.0.1:8000/';
 
 export const requestTemplate = axios.create({
   baseURL: BASE_URL,

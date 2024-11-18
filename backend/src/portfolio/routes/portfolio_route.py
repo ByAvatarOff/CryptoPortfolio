@@ -2,13 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from fastapi import APIRouter, Depends
-from src.portfolio.schemas.schema import (
-    PortfolioSchema,
-    PortfolioCreateSchema,
-)
+from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException
+from src.portfolio.schemas.schema import PortfolioSchema
 from starlette import status
 from src.portfolio.depends import get_portfolio_controller
+from src.core.settings import settings
 
 if TYPE_CHECKING:
     from src.portfolio.models.models import Portfolio
@@ -27,10 +25,13 @@ portfolio_router = APIRouter(
     status_code=status.HTTP_201_CREATED
 )
 async def create(
-        new_portfolio: PortfolioCreateSchema,
+        name: str = Form(...),
+        image: UploadFile = File(...),
         controller: PortfolioController = Depends(get_portfolio_controller),
 ) -> Portfolio:
-    return await controller.create(new_portfolio=new_portfolio)
+    if image.content_type not in settings.app.allow_upload_types:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid file type")
+    return await controller.create(name=name, image=image)
 
 
 @portfolio_router.get(
@@ -42,7 +43,6 @@ async def list(
         controller: PortfolioController = Depends(get_portfolio_controller),
 ) -> list[Portfolio]:
     return await controller.list()
-
 
 
 @portfolio_router.delete(

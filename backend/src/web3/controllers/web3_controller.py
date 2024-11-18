@@ -4,11 +4,11 @@ from typing import TYPE_CHECKING
 
 from src.auth.models import User
 from src.web3.domain.services.web3_service import Web3Service
-from src.portfolio.schemas.schema import PortfolioCreateSchema
+from fastapi import UploadFile
 
 
 if TYPE_CHECKING:
-    from src.web3.schemas.schema import Web3PortfolioCreateSchema
+    from src.web3.schemas.schema import Web3Addresses
     from src.portfolio.domain.services.portfolio_service import PortfolioService
     from src.portfolio.domain.services.operation_service import OperationService
 
@@ -26,12 +26,11 @@ class Web3Controller:
         self.portfolio_service = portfolio_service
         self.operation_service = operation_service
 
-    async def create_web3_portfolio(self, web3_data: Web3PortfolioCreateSchema):
+    async def create_web3_portfolio(self, name: str, image: UploadFile, web3_data: list[Web3Addresses]):
         """TODO create transaction"""
         portfolio = await self.portfolio_service.create(
-            new_portfolio=PortfolioCreateSchema(
-                name=web3_data.name
-            ),
+            portfolio_name=name,
+            image=image,
             user_id=self.user.id
         )
         wallet_info = await self.web3_service.get_waller_info(

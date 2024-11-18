@@ -28,23 +28,25 @@ async def list_tickers_stat(
 
 
 @investment_router.get(
-    '/sum_operations/',
+    '/sum_operations/{portfolio_id}/',
     response_model=list[OperationSumSchema],
     status_code=status.HTTP_200_OK
 )
 async def sum_operations(
+        portfolio_id: int,
         controller: InvestmentController = Depends(get_investment_controller),
 ) -> list[dict]:
-    return await controller.sum_operations()
+    return await controller.sum_operations(portfolio_id=portfolio_id)
 
 
 @investment_router.get(
-    '/all_time_profit/{period}/',
+    '/all_time_profit/{portfolio_id}/{period}/',
     response_model=AllTimeProfitSchema,
     status_code=status.HTTP_200_OK
 )
 async def all_time_profit(
+        portfolio_id: int,
         period: PeriodTimeframeEnum,
         controller: InvestmentController = Depends(get_investment_controller),
 ) -> AllTimeProfitSchema:
-    return await controller.all_time_profit(period=period)
+    return await controller.all_time_profit(portfolio_id=portfolio_id, period=period)
